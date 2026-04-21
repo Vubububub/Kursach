@@ -1,0 +1,5 @@
+aiogram
+aiohttp
+sentence-transformers
+deep-translator
+torch
