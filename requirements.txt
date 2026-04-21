@@ -2,4 +2,4 @@ aiogram
 aiohttp
 sentence-transformers
 deep-translator
-torch --index-url https://download.pytorch.org/whl/cpu
+torch
