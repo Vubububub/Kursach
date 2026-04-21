@@ -10,8 +10,6 @@ from aiogram.filters import Command
 from sentence_transformers import SentenceTransformer, util
 
 
-
-
 last_results = []
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
