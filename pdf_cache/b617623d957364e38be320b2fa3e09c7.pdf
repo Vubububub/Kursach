@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Structural Characteristics and Optical Properties of SiC Thin Films Produced by the RF-PVD Method</div>
+
+                <div>East European Journal of Physics, 2025</div>
+
+                <div class = "abstract"><jats:p>We studied the silicon carbide semiconductor compound, which is widely used as the most characteristic material in the preparation of semiconductors. In the radio frequency (RF) mode of the magnetron sputtering device, 300-400 nm thick SiC thin films were formed in an Ar environment as a reactive gas in a vacuum of 10-4 Torr. In the radio frequency mode, a power of 240 W with a frequency of 100 kHz and D=70% were used. The maximum sputtering speed of the magnetron was 50 Ǻ/s. A circular silicon...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.26565/2312-4334-2025-2-41">10.26565/2312-4334-2025-2-41 <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" >
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "https://periodicals.karazin.ua/eejp/article/download/26381/23505" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1016/j.optmat.2017.09.031">
+    <div class = "title">Effect of sputtering power on the structure and optical band gap of SiC thin films</div>
+    <div><span class = "journal">Optical Materials</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">Abstract Amorphous SiC (a-SiC) thin films with a quartz plate as the substrate were prepared under different radio frequency (RF) powers through RF magnetron sputtering. Films structures were characterized by atomic force microscopy (AFM), X-ray photoelectron spectroscopy (XPS), X-Ray Diffraction (XRD) and Raman spectrum. The absorption spectra of the thin films were acquired with UV–visible spectroscopy. Results showed that thin films prepared under different RF powers have different structures. With...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2015.12.097">
+    <div class = "title">Structural properties and preparation of Si-rich Si1−xCx thin films by radio-frequency magnetron sputtering</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Abstract Si-rich silicon carbide (Si1−xCx) thin films were prepared by radio-frequency (2 MHz, 13.56 MHz and 27.12 MHz) magnetron sputtering. Their structural properties were investigated by X-ray photoelectron spectroscopy (XPS), Fourier transform infrared spectroscopy (FTIR), and atomic force microscopy (AFM). The effect of ions energy on films deposition was also analyzed by retarding field energy analyzer. The results show that the films compositions are related to the energy of ions impacting the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.tsf.2019.01.047">
+    <div class = "title">Optical, electrical and microstructural properties of SiC thin films deposited by reactive dc magnetron sputtering</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">In this study, amorphous silicon carbide (SiC) thin films of variable compositions were deposited on Si (100) and glass substrates by reactive direct current magnetron sputtering of high purity silicon target, using CH4 as reactive gas. The composition and the properties of the coatings have been modified by the change in the reactive gas flow rate from 5% to 50%. Spectrophotometer has been used to measure the optical transmittance and reflectance of silicon carbide thin films over the spectral range from...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0257-8972(03)00234-2">
+    <div class = "title">Hydrogenated amorphous and crystalline SiC thin films grown by RF-PECVD and thermal MOCVD; comparative study of structural and optical properties</div>
+    <div><span class = "journal">Surface and Coatings Technology</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">Thin films of hydrogenated amorphous silicon carbide (a-SiC:H) and crystalline silicon carbide (c-SiC) with different compositions were deposited on Si(1 0 0) substrates by both RF plasma enhanced chemical vapor deposition and thermal metal organic chemical vapor deposition methods using a SiH4+CH4 gas mixture and a single molecular precursor of diethylmethylsilane, respectively. In this experiment, we mainly investigated the dependence of structural and optical properties of a-SiC:H and c-SiC thin films...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1116/1.5097628">
+    <div class = "title">Dual ion beam grown silicon carbide thin films: Variation of refractive index and bandgap with film thickness</div>
+    <div><span class = "journal">Journal of Vacuum Science &amp; Technology B, Nanotechnology and Microelectronics: Materials, Processing, Measurement, and Phenomena</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Amorphous SiC thin films on a silicon substrate (Si) with different film thicknesses (about 20–450 nm) were deposited using dual ion beam sputtering deposition (DIBSD) at room temperature. These SiC thin films were of high quality showing high coverage (&amp;gt;90%) and low surface and interface roughness (&amp;lt;5 Å). The structure and morphology of these SiC/Si systems were explored by x-ray reflectivity, x-ray diffraction, scanning electron microscopy, and atomic force microscopy. The bonding...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1143/jjap.47.8287">
+    <div class = "title">Structure and Optical Properties of Silicon Oxycarbide Films Deposited by Reactive RF Magnetron Sputtering Using a SiC Target</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Silicon oxycarbide (SiOC) films were prepared by reactive RF magnetron sputtering at room temperature with a SiC target, and deposition was carried out under various oxygen flow ratios. The Si–O chemical bonding in the SiOC films was evaluated by IR transmittance spectroscopy and X-ray photoelectron spectroscopy (XPS) measurement, and the composition of the SiOC film was determined by Rutherford backscattering spectroscopy (RBS) measurement. The carbon and oxygen content in the SiOC film decreased and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.5100708">
+    <div class = "title">Effect of deposition temperature on microstructure properties of SiC thin films deposited using RF magnetron sputtering</div>
+    <div><span class = "journal">AIP Conference Proceedings</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">This paper presents the microstructure properties of SiC thin films deposited at 300°C and 400°C using RF M agnetron sputtering on silicon wafer substrate. The microstructural properties are investigated for both the samples using X-Ray diffraction (XRD), Fourier transform Infrared spectroscopy (FTIR) and Atomic force microscopy (AFM). The XRD patterns of the SiC thin films show an increase in crystallite size and decrease in strain and dislocation density as deposition temperature increases. An FTIR...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.408436">
+    <div class = "title">Preparation and characterization of silicon carbide thin films synthesized by rf reactive sputtering</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">Carbon-rich SiC thin films were synthesized by rf-reactive sputtering at different anodic voltages, 1.2 kV, 1.6 kV and 2.0 kV respectively. XPS, FTIR, Raman spectra and Nano Indentor microhardness were used to characterize as- deposited thin films. The results showed that higher anodic voltage enabled to increase Si-C bond and sp<SUP>3</SUP>-bonded carbon atoms in the films. The sample grown at 2.0 kV exhibited Si/C ratio of nearly 1 from XPS results, a pronounced Si-C peak in the FTIR spectra, only a weak...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.ceramint.2021.05.120">
+    <div class = "title">Influence of radio frequency magnetron sputtering parameters on the structure and performance of SiC films</div>
+    <div><span class = "journal">Ceramics International</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">Amorphous SiC films fabricated by Radio frequency (RF) magnetron sputtering have been widely used due to their excellent properties including high strength, good hardness and outstanding abrasion resistance. However, most researches set a lower target-substrate distance, which limits its large-scale coating for practical industrial application. In this work, the distance between the target and substrate was enlarged to 120 mm, and the effective coating area was about four to ten times than other...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.cjph.2020.01.006">
+    <div class = "title">Research on adhesion strength and optical properties of SiC films obtained via RF magnetron sputtering</div>
+    <div><span class = "journal">Chinese Journal of Physics</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">SiC is widely used in various mechanical applications as a protective film because of its strength, thermal stability and good mechanical hardness. Here, amorphous SiC thin films with AlN as a buffer layer were deposited on glass and Si substrates through RF magnetron sputtering at different RF powers. The influence of the AlN buffer layer thickness on the morphological and the mechanical properties of the composite films was investigated. Results demonstrate that the AlN buffer layer can effectively...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/plasma.2003.1228796">
+    <div class = "title">RF plasma assisted process for the deposition of silicon carbide thin films</div>
+    <div><span class = "journal">The 30th International Conference on Plasma Science, 2003. ICOPS 2003. IEEE Conference Record - Abstracts.</span>, <span class = "year"></span></div>
+    <div class = "abstract">Summary form only given, as follows. Recently, interest has increased about silicon carbide (SiC) thin films deposited onto various substrates because of the possibility of widespread applications such as high power electronic devices and high temperature sensors. The chemical vapor deposition of the SiC thin films on the heated silicon (Si) substrate is a widely used technique in the microelectronics areas. However, in these processes, the Si substrate must be raised to near 1400/spl deg/C to form a...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0040-6090(00)01130-5">
+    <div class = "title">Dependency of reactive magnetron-sputtered SiC film quality on the deposition parameters</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">SiC thin films have been prepared by using RF reactive magnetron sputtering (RF-RMS). The deposition parameters have been varied over a wide range to optimize the quality of the films; substrate temperature from 700 to 1000°C, Ar/CH4 composition from 80:20 to 50:50 and RF power from 100 to 200 W. The samples have been characterized by X-ray diffraction, Rutherford backscattering, profilometry, FTIR spectroscopy and ellipsometry. The results show that good quality silicon carbide films can be prepared by...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1116/1.1431952">
+    <div class = "title">Spectra characterization of silicon carbonitride thin films by reactive radio frequency sputtering</div>
+    <div><span class = "journal">Journal of Vacuum Science &amp; Technology B: Microelectronics and Nanometer Structures Processing, Measurement, and Phenomena</span>, <span class = "year">2002</span></div>
+    <div class = "abstract">Silicon carbonitride thin films were synthesized on single-crystal Si(100) substrates by reactive rf sputtering a SiC target in nitrogen and argon mixture gas (1:4) and a Si3N4 target in methane and argon mixture gas (1:5 and 1:8), respectively. The effect of target voltage on chemical composition and bonding configuration of thin films were studied. Auger electron spectra confirmed the presence of Si, C, N, and O elements in the deposited films. With the assumption that the absorption coefficient of each...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.vacuum.2005.04.003">
+    <div class = "title">Structure and photoluminescence properties of SiC films synthesized by the RF-magnetron sputtering technique</div>
+    <div><span class = "journal">Vacuum</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">SiC films were prepared by the RF-magnetron sputtering technique on P-Si substrates with the target of single crystalline SiC. The as-deposited films were annealed in the temperature range of 700–1000 °C under nitrogen ambient. The thin films have been characterized by X-ray diffraction (XRD), Fourier transform infrared spectroscopy (FT-IR), X-ray photoelectron spectroscopy (XPS) and Auger electron spectroscopy (AES). The results showed that the samples were amorphous until they were annealed at 1000...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/fotonica.2014.6843892">
+    <div class = "title">Spectral photoconductivity of nanostructured silicon carbon films spectral photoconductivity of SiC thin films</div>
+    <div><span class = "journal">2014 Fotonica AEIT Italian Conference on Photonics Technologies</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">Nanostructured films composed of silicon crystallites embedded in a hydrogenated amorphous silicon carbon matrix have been deposited by plasma enhanced chemical vapour deposition from silane-methane mixtures diluted in hydrogen varying the rf power. Structural, optical and photoconductivity properties of the films have been investigated. The increase in rf power in the 40-80 W range enhances the incorporation of carbon in the amorphous matrix and decreases the fraction and size of the silicon crystallites...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1504/ijnt.2013.053527">
+    <div class = "title">Deposition temperature effects on optical and structural properties of amorphous silicon carbide films</div>
+    <div><span class = "journal">International Journal of Nanotechnology</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">Hydrogenated amorphous silicon carbide thin films (a–SiC:H) were elaborated by DC magnetron sputtering technique by using 6H–SiC as target. The a–SiC:H films of 0.9–1.5 µm thicknesses were deposited at different temperatures of 250, 350, 450 and 550°C on p–type Si(100) and Corning glass 9075 substrates. The deposited films (a–SiC:H) were investigated by Infrared Spectroscopy (FTIR), spectrophotometry (UV–visible–NIR), Secondary Ion Mass Spectrometry (SIMS), and photoluminesence...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.cap.2005.07.031">
+    <div class = "title">Plasma assisted process for deposition of silicon carbide thin films</div>
+    <div><span class = "journal">Current Applied Physics</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">Silicon carbide (SiC) thin films were deposited on silicon substrate by the RF plasma chemical method, operating at a frequency of 13.56 MHz. Two different plasma assisted chemical vapor deposition (CVD) technologies were attempted: direct plasma CVD with reaction gas of CH3SiCl3 and remote plasma CVD with SiH4 + C3H8. The film deposition rate of SiC was linearly increased with the plasma power when the substrate temperature was fixed to 300 °C. The measurement of the photon absorption reveals that the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.360377">
+    <div class = "title">Structural and electrical studies of radio frequency sputtered hydrogenated amorphous silicon carbide films</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">1995</span></div>
+    <div class = "abstract">The structural and electrical properties of radio frequency (rf) sputtered hydrogenated amorphous silicon carbide films are presented in this paper. Films were prepared with sputtering pressure Ps varied from 0.8 to 3 Pa, or with substrate temperature Ts varied from 100 to 300 °C. For films deposited with an argon plus hydrogen ambient, the deposition rate was found to increase with increase in Ps and decrease with an increase in Ts. For films prepared with an argon ambient only, the deposition rate...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2009.09.071">
+    <div class = "title">Influence of radiofrequency power on compositional, structural and optical properties of amorphous silicon carbonitride films</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">The silicon carbonitride (SiCN) films were deposited on n-type Si (1 0 0) and glass substrates by the radiofrequency (RF) reactive magnetron sputtering of polycrystalline silicon target under mixed reactive gases of acetylene and nitrogen. The films have been characterized by energy dispersive spectrometer (EDS), atomic force microscope (AFM), X-ray diffraction (XRD), Fourier transform infrared spectroscopy (FTIR) and ultraviolet–visible spectrophotometer (UVS). The influence of RF power on the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.diamond.2005.07.006">
+    <div class = "title">Surface and optical analysis of SiCx films prepared by RF-RMS technique</div>
+    <div><span class = "journal">Diamond and Related Materials</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">Silicon Carbide thin films have been prepared by RF reactive magnetron sputtering of a silicon target in a mixture of Ar and CH4. Surface analysis was performed by X-ray photoelectron spectroscopy (XPS) to examine the elemental bonding at the surface and in bulk of the material. Optical analysis was carried out by ellipsometry to study the optical constants (n and k) and band gap of the films. Transmission and scanning electron microscopy, FTIR and X-ray diffraction, were employed to supplement our...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jallcom.2009.08.009">
+    <div class = "title">IR studies of SiCN films deposited by RF sputtering method</div>
+    <div><span class = "journal">Journal of Alloys and Compounds</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Abstract Silicon carbon nitride (SiCN) films were deposited on Si (1 0 0) substrates by radio-frequency (RF) sputtering method using SiC target as Si, C source and nitrogen as reactant gas. X-ray photoelectron spectroscopy (XPS) and Fourier transform infrared spectroscopy (FTIR) were used to investigate the composition and bonding structures of the SiCN films, indicating that the main bonds such as Si–C, Si–N, C N and C N were formed in the deposited SiCN films. Analysis of XPS indicated that the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4946704">
+    <div class = "title">Influence of sputtering power on structural, mechanical and photoluminescence properties of nanocrystalline SiC thin films</div>
+    <div><span class = "journal">AIP Conference Proceedings</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">In the present study, SiC thin films were deposited on Si (100) substrate by magnetron sputtering using a 4N purity commercial SiC target in argon atmosphere. The effect of sputtering RF power (140-170W) on structural, mechanical and photoluminescence properties were systematically studied by X-ray diffraction, field emission scanning electron microscopy, Nanoindentation and Spectrophotometer respectively. X-ray diffraction shows polycrystalline 4H-SiC phase with (105) preferred orientation and an...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2011.03.033">
+    <div class = "title">Synthesis and characterization of porous crystalline SiC thin films prepared by radio frequency reactive magnetron sputtering technique</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Hexagonal SiC thin films have been deposited using radio frequency reactive magnetron sputtering technique by varying the substrate temperature and other deposition conditions. Prior to deposition surface modification of the substrate Si(1 0 0) played an important role in deposition of the hexagonal SiC structure. The effect of substrate temperature during deposition on structure, composition and surface morphology of the SiC films has been analyzed using atomic force microscopy, Fourier transform infrared...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.362959">
+    <div class = "title">Effects of hydrogen and rf power on the structural and electrical properties of rf sputtered hydrogenated amorphous silicon carbide films</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">1996</span></div>
+    <div class = "abstract">The effects of the rf power (100 to 600 W) and the hydrogen partial pressure (PH=0.15 to 0.6 Pa.) on the deposition rate and the structural and electrical properties of rf sputtered hydrogenated amorphous silicon carbide (a‐Si1−xCx:H) films were investigated. The films were deposited in an argon plus hydrogen ambient. The deposition rate increased with increasing rf power, but decreased with increasing PH. The refractive index increases from 1.85–3.6 as the rf power increases from 100–600 W and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.surfcoat.2004.10.033">
+    <div class = "title">Preparation of Si–C–H thin films embedded with high oriented (100) polycrystalline silicon</div>
+    <div><span class = "journal">Surface and Coatings Technology</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">Abstract Si–C–H thin films were prepared by RF-plasma enhanced chemical vapor deposition (RF-PECVD) at the substrate temperature of 300 °C, in which SiH 4 and CH 4 were used as the resource gases and hydrogen as the carrying vehicle. X-ray diffraction (XRD), Raman spectroscopy (RS), infrared absorption spectroscopy (IR), and high-resistance meter were used to measure the microstructure and resistivity, respectively. The results indicate that the thin films deposited on (100) silicon substrate at the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0169-4332(00)00827-8">
+    <div class = "title">Strong dependence of IR absorption in a-SiC:H dc magnetron sputtered thin films on H2 partial pressure</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2001</span></div>
+    <div class = "abstract">Abstract The usual method for deposition of hydrogenated amorphous silicon carbide (a-SiC:H) thin films is the radio-frequency (rf) magnetron sputtering method in an Ar and CH 4 mixture. In this paper, we present a dc magnetron sputtering method for a-SiC:H thin films. The films were deposited in a mixture of CH 4 , H 2 and Ar. The target used was polycrystalline Si. We found that the hydrogen partial pressure has a decisive contribution to the film composition. The presence of hydrogen leads to dominant...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1103/physrevb.49.8191">
+    <div class = "title">Optical properties of α-SiC:H thin films grown by rf sputtering</div>
+    <div><span class = "journal">Physical Review B</span>, <span class = "year">1994</span></div>
+    <div class = "abstract">In this work, the optical transmission and reflection of \ensuremath{\alpha}-SiC:H thin films, grown by rf sputtering, are studied. The absorption coefficient is found. The real (${\mathrm{\ensuremath{\varepsilon}}}_{1}$) and the imaginary (${\mathrm{\ensuremath{\varepsilon}}}_{2}$) part of the dielectric function are determined by means of ellipsometric measurements, in the region 1.5--6.3 eV. The dependence of ${\mathrm{\ensuremath{\varepsilon}}}_{1}$ and ${\mathrm{\ensuremath{\varepsilon}}}_{2}$ on...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1166/jnn.2013.5950">
+    <div class = "title">Variation in the Nanostructural Features of nc-Si:H Films with Radio Frequency Power Conditions</div>
+    <div><span class = "journal">Journal of Nanoscience and Nanotechnology</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">The effect of radio frequency (RF) power on the variation in the nanostructures, chemical features and surface morphology of nc-Si:H thin films was investigated. SiH4 and H2 gases were used as source materials for the films. The films were prepared by plasma enhanced chemical vapor deposition (PECVD) techniques and the power ranged from 100 to 300 W. The average crystal size of the films varied from -1 to -12 nm and the highest crystalline volume fraction reached up to -33% when the applied RF power was...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1143/jjap.42.620">
+    <div class = "title">Mechanical Properties of Silicon Carbonitride Thin Films</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">Silicon carbonitride thin films,were synthesized by reactive rf sputtering a silicon carbide target in nitrogen and argon atmosphere, or sputtering a silicon nitride target in methane and argon atmosphere, respectively. The Nanoindentation technique (Nanoindenter XP system with a continuous stiffness measurement technique) was employed to measure the hardness and elastic modulus of thin films. The effects of sputtering power on the mechanical properties are different for the two SiCN thin films. With...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0169-4332(01)00010-1">
+    <div class = "title">Preparation of silicon carbide nitride thin films by sputtering of silicon nitride target</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2001</span></div>
+    <div class = "abstract">Amorphous silicon carbide nitride thin films were synthesized on single crystal silicon (0 0 1) substrates by rf reactive sputtered a silicon nitride target in methane and argon atmosphere. The effects of sputtering parameters such as target voltage in the range of 1.6–3.0 kV on the optical properties were studied by a Cary 500 UN-VIS-NIR spectrophotometer and Bio-Rad FTS 185 FTIR spectrometer. The results showed that the deposition rate reached maximal at the target voltage of 2.5 kV. The refractive...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.408319">
+    <div class = "title">Sputtering deposition and optical properties of SiC x N y films</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">In this paper, the SiC x N y films were prepared by RF magnetron sputtering with SiC target. The influences of the basic process parameters on the deposition rate and optical properties were studied. The results revealed the formation of a complex network among Si, C and N. The deposition rate decreased with increasing partial pressure of nitrogen. The increase of N 2 flux resulted in the wider optical gap. The greater the sputtering power, the higher the deposition rate and the narrower the optical band...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1742-6596/987/1/012029">
+    <div class = "title">Structural and optical properties of SiC-SiO<sub>2</sub> nanocomposite thin films</div>
+    <div><span class = "journal">Journal of Physics: Conference Series</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">This study deals with the deposition of thin films of a SiC-SiO2nanocomposite deposited on silicon substrates. The deposition is carried out by a co-sputtering RF magnetron 13.56 MHz, using two targets a polycristallin 6H-SiC and sprigs of SiO2. In order to study the influence of the deposition time on the morphology, the structural and optical properties of the thin films produced, two series of samples were prepared, namely a series A with a 30 min deposition time and a series B of one hour duration. The...</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

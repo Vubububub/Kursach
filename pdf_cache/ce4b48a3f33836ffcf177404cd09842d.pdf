@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Thickness mod ulated structural and photo-luminescence properties of magnetron sputtered nanocrystalline SiC ultrathin films</div>
+
+                <div>Advanced Materials Proceedings, 2021</div>
+
+                <div class = "abstract">Ultrathin silicon carbide (SiC) films were grown on p type Si (100) substrate by RF magnetron sputtering at constant substrate temperature of 7000C for investigating thickness dependence of structural and photoluminescence properties. The structural and Photoluminescence properties were measured by X-ray diffraction (XRD), Fourier Transform Infrared Spectroscopy (FTIR) and photospectrometer respectively. X-ray diffraction pattern revealed (102) and dominant (105) reflections which corresponds to 4H-SiC and...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.5185/amp.2017/782">10.5185/amp.2017/782 <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info" style = "display:none" translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" >
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "https://amp.iaamonline.org/article_16281_29e9ba147f58d98b6a92fc2f80df6ba9.pdf" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1063/1.4946704">
+    <div class = "title">Influence of sputtering power on structural, mechanical and photoluminescence properties of nanocrystalline SiC thin films</div>
+    <div><span class = "journal">AIP Conference Proceedings</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">In the present study, SiC thin films were deposited on Si (100) substrate by magnetron sputtering using a 4N purity commercial SiC target in argon atmosphere. The effect of sputtering RF power (140-170W) on structural, mechanical and photoluminescence properties were systematically studied by X-ray diffraction, field emission scanning electron microscopy, Nanoindentation and Spectrophotometer respectively. X-ray diffraction shows polycrystalline 4H-SiC phase with (105) preferred orientation and an...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.112212">
+    <div class = "title">Growth of high-quality 3C-SiC epitaxial films on off-axis Si(001) substrates at 850 °C by reactive magnetron sputtering</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">1994</span></div>
+    <div class = "abstract">Single crystal 3C‐SiC films of thickness ∼10 μm were grown by reactive magnetron sputtering on off‐axis Si(001) at 850 °C. The film quality was comparable to the best chemical vapor deposited 3C‐SiC as characterized by x‐ray diffraction, transmission electron microscopy, and photo‐ luminescence (PL). The lattice mismatch and difference in thermal contraction between SiC and Si resulted in complete arrays of misfit dislocations at the film/substrate interface and a residual in‐plane strain...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.physb.2011.09.016">
+    <div class = "title">Structure and optical features of silicon carbide nanocrystals confined in alumina matrices</div>
+    <div><span class = "journal">Physica B: Condensed Matter</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Thin films based on silicon carbide and alumina were synthesized by means of rf-sputtering using a co-deposition process. Several nanostructures were created which consist of thin films (∼200 nm thick) with homogeneous distribution of SiC nanocrystals (∼5 nm mean diameter) in the host alumina matrices. Characterization methods including X-ray photoelectrons spectroscopy (XPS), UV–vis absorption and photoluminescence (PL) were used to identify the involved structures, compositions and optical features...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1116/1.2756556">
+    <div class = "title">Fabrication and characterization of Si nanocrystals in SiC matrix produced by magnetron cosputtering</div>
+    <div><span class = "journal">Journal of Vacuum Science &amp; Technology B: Microelectronics and Nanometer Structures Processing, Measurement, and Phenomena</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">Si-rich amorphous silicon carbide thin films were prepared by magnetron cosputtering and were subsequently annealed to form Si nanocrystals embedded in a SiC matrix. A sputter target consisted of a patterned Si wafer on top of a carbon target. The ratio of carbon to silicon in deposited films was adjusted by means of a different silicon wafer open area. X-ray photoelectron spectroscopy spectra show that various compositions were obtained by changing the sputtered area ratio of carbon to silicon target....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/ssp.82-84.637">
+    <div class = "title">The Structure and Photoluminescence of Erbium-Doped Nanocrystalline Silicon Thin Films Produced by Reactive Magnetron Sputtering</div>
+    <div><span class = "journal">Solid State Phenomena</span>, <span class = "year">2001</span></div>
+    <div class = "abstract">We have produced and studied undoped and erbium-doped nanocrystalline silicon thin films in order to evaluate the erbium influence on the film microstructure and how this correlates with the photoluminescence properties. Films were grown by reactive RF sputtering. For the doped films metallic erbium was added to the c-Si target. The structural parameters and the chemical composition of the different samples were investigated by X-ray in the grazing incidence geometry, Raman spectroscopy, ellipsometry and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.physb.2009.12.056">
+    <div class = "title">Effects of substrate temperature on microstructural and photoluminescent properties of nanocrystalline silicon carbide films</div>
+    <div><span class = "journal">Physica B: Condensed Matter</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">Nanocrystalline silicon carbide (nc-SiC) thin films have been grown on silicon (1 0 0) substrates by helicon wave plasma enhanced chemical vapor deposition technique and the photoluminescence of the films has been tuned from yellow to blue by changing the substrate temperatures ( T s ). The resulting nc-SiC films show a microstructure of 3C–SiC nanocrystallites embedded in hydrogenated amorphous SiC matrix. Detailed analysis of the infrared absorption reveals that the degree of crystallization of the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.3638084">
+    <div class = "title">Roles of SiH[sub 4] in Growth, Structural Changes and Optical Properties Of Nanocrystalline Silicon Thin Films</div>
+    <div><span class = "journal">AIP Conference Proceedings</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Nanocrystalline silicon (ns‐Si) thin films deposited through plasma‐enhanced chemical vapor deposition technique were studied. These films were grown at low deposition temperature of 200 °C and at different silane flow rates (&#x5B;SiH4&#x5D;). Characterization of these films with Raman spectroscopy, x‐ray diffraction and atomic force microscopy revealed that no films deposited at &#x5B;SiH4&#x5D; = 0.0 sccm. In addition, the structural change from an amorphous to a nanocrystalline phase at &#x5B;SiH4&#x5D; = 0.2 sccm. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0921-5107(99)00253-6">
+    <div class = "title">Low temperature direct growth of nanocrystalline silicon carbide films</div>
+    <div><span class = "journal">Materials Science and Engineering: B</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">Hydrogenated silicon carbide thin films have been grown directly by reactive magnetron co-sputtering of Si and C targets in a pure hydrogen plasma at substrate temperatures, TS, ranging between 300 and 700°C. The results reveal the achievement of nanocrystalline SiC at a deposition temperature of 400°C, the lowest temperature ever reported for the sputtering method. Both intensity increase and peak narrowing of the lorentzian infrared absorption band at ∼800 cm−1 ascribed to Si–C bonds in the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1116/1.5097628">
+    <div class = "title">Dual ion beam grown silicon carbide thin films: Variation of refractive index and bandgap with film thickness</div>
+    <div><span class = "journal">Journal of Vacuum Science &amp; Technology B, Nanotechnology and Microelectronics: Materials, Processing, Measurement, and Phenomena</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Amorphous SiC thin films on a silicon substrate (Si) with different film thicknesses (about 20–450 nm) were deposited using dual ion beam sputtering deposition (DIBSD) at room temperature. These SiC thin films were of high quality showing high coverage (&amp;gt;90%) and low surface and interface roughness (&amp;lt;5 Å). The structure and morphology of these SiC/Si systems were explored by x-ray reflectivity, x-ray diffraction, scanning electron microscopy, and atomic force microscopy. The bonding...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.126382">
+    <div class = "title">Time-resolved photoluminescence spectra of strong visible light-emitting SiC nanocrystalline films on Si deposited by electron-cyclotron-resonance chemical-vapor deposition</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">SiC nanocrystalline films on Si substrates deposited using advanced electron-cyclotron-resonance chemical-vapor deposition exhibit intense visible light emission at room temperature under laser excitation. Continuous-wave and time-resolved photoluminescence measurements for these SiC films were carried out at room temperature. The photon energy of the dominant emission peaks is higher than the band gap of cubic SiC. Room-temperature optical absorption measurements show a clear blueshift of the band gap of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.physleta.2006.01.105">
+    <div class = "title">The structure and optical properties of SiC film on Si (111) substrate with a ZnO buffer layer by RF-magnetron sputtering technique</div>
+    <div><span class = "journal">Physics Letters A</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">Abstract We have fabricated a multiply layer SiC/ZnO on Si substrates using the RF-magnetron sputtering technique with the targets of a single crystalline SiC and a polycrystalline ZnO. The as-deposited films were annealed in the temperature range of 600–1000 °C under nitrogen ambient. We have observed a strong ultraviolet (UV) emission (370 nm) from the as-deposited SiC/ZnO film and an intense violet emission (412 nm) from the film annealed at high temperature (1000 °C) under nitrogen ambient. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/icsict.2006.306598">
+    <div class = "title">Epitaxial growth of SiC films at low temperature and its photoluminescence</div>
+    <div><span class = "journal">2006 8th International Conference on Solid-State and Integrated Circuit Technology Proceedings</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">In this paper, our work on heteroepitaxial SiC films deposited on single-crystalline (111) silicon by hot filament chemical vapor deposition (HFCVD) at low temperature of 800 degC is reported. The surface topography of SiC films on Si substrate were analyzed by atomic force microscope (AFM). The characteristics and crystallinity of the SiC film were examined by X-ray diffractometer (XRD) and Fourier transform infrared (FTIR). As can be seen in XRD spectrum, the peaks of Si (111), SiC (111) and SiC (222)...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2011.10.025">
+    <div class = "title">Decay processes of photoluminescence in a nanocrystalline SiC thin film</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Abstract Nanocrystalline (nc)-SiC film has been deposited by helicon wave plasma enhanced chemical vapor deposition technique and intense blue-white light emission is obtained. Microstructure analyses show that the 3C–SiC particles are embed in amorphous SiC matrix, and the average size of the nc-SiC is 3.96 nm. The photon energy of the main photoluminescence (PL) band is higher than the band gap of bulk SiC, which indicates that the optical emission mainly occurs in quantum states of 3C–SiC...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.793676">
+    <div class = "title">Blue photoluminescence of PECVD SiC-based films</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Amorphous and nanocrystalline SiC films enriched by oxygen were deposited by a PECVD technique using
+methyltrichlorosilane as a gas-precursor at substrate temperature in the range of 200-350 °C. X-ray diffraction (XRD) of
+the film deposited at 350°C exhibited the presence of SiC nano-crystallites. In this film the bright blue
+photoluminescence (PL) with spectrum that has a double-peak structure at 415 and 437 nm was obsearved at room
+temperature. The film was annealed at 650 and 850 °C in vacuum....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4732434">
+    <div class = "title">Effect of sputtering gas on structural and optical properties of sputtered SiC thin films</div>
+    <div><span class = "journal">AIP Conference Proceedings</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">We report the structural and optical properties of nanostructured SiC thin films deposited on Si (100) and glass substrates by RF-magnetron sputtering. The effect of sputtering pressure on these properties has been studied systematically. The formations of SiC as well as carbon clusters were found in the measured Raman spectra. The average roughness of the SiC films increases with increase in the sputtering pressure. The optical band gap of the SiC films measured by UV-Visible spectrophotometer was found...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1080/01418610110076068">
+    <div class = "title">Low temperature nanocrystallization of silicon carbide by hydrogen reactive magnetron sputtering</div>
+    <div><span class = "journal">Philosophical Magazine A</span>, <span class = "year">2002</span></div>
+    <div class = "abstract">Abstract Hydrogenated SiC thin films were deposited at various temperatures T d from 100 to 600°C by means of reactive magnetron sputtering in a pure hydrogen plasma. The detailed structural analysis was performed by three complementary techniques: transmission electron microscopy in both conventional and high resolution modes, infrared absorption spectroscopy and X-ray diffraction. The results from the three techniques agree, revealing an onset of crystallization at a Td value as low as 300°C. There,...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jallcom.2013.03.213">
+    <div class = "title">Effect of underlying silicon layer on microstructure and photoluminescence of rapid-thermal-annealed carbon and C/Si nanofilms</div>
+    <div><span class = "journal">Journal of Alloys and Compounds</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">A composite material for broad photoluminescence (PL) from asymmetry to more symmetry-like was proposed by the formation of Si nanocrystals (nc-Si), SiC nanoparticles (np-SiC) and sp2 carbon cluster which were made from the two-layer C/Si on Si(1 0 0) using rapid-thermal-annealing at 750 °C for 1 min. The effect of underlying Si layer thickness on the microstructure and broad PL of the annealed carbon and two-layer C/Si films has been investigated. Fourier-transform-infrared-absorption spectra indicated...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0925-9635(00)00528-8">
+    <div class = "title">Optical and structural properties of SiC layers grown by an electron cyclotron resonance CVD technique</div>
+    <div><span class = "journal">Diamond and Related Materials</span>, <span class = "year">2001</span></div>
+    <div class = "abstract">Abstract Large area microcrystalline and polycrystalline SiC thin films have been grown by electron cyclotron resonance CVD over (100) silicon wafers. The samples have been characterized by X-ray diffractometry (XRD), transmission electron microscopy (TEM), micro-Raman and photo luminescence spectroscopy. Stoichiometric SiC films containing 3C–SiC crystals with orientation close to that of Si substrate and lateral grain dimension up to 1400 A were obtained under suitable deposition conditions. They also...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1080/01418610208239620">
+    <div class = "title">Low temperature nanocrystallízation of silicon carbide by hydrogen reactive magnetron sputtering</div>
+    <div><span class = "journal">Philosophical Magazine A</span>, <span class = "year">2002</span></div>
+    <div class = "abstract">Abstract Hydrogenated SiC thin films were deposited at various temperatures T d from 100 to 600°C by means of reactive magnetron sputtering in a pure hydrogen plasma. The detailed structural analysis was performed by three complementary techniques: transmission electron microscopy in both conventional and high resolution modes, infrared absorption spectroscopy and X-ray diffraction. The results from the three techniques agree, revealing an onset of crystallization at a Td value as low as 300°C. There,...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.vacuum.2005.04.003">
+    <div class = "title">Structure and photoluminescence properties of SiC films synthesized by the RF-magnetron sputtering technique</div>
+    <div><span class = "journal">Vacuum</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">SiC films were prepared by the RF-magnetron sputtering technique on P-Si substrates with the target of single crystalline SiC. The as-deposited films were annealed in the temperature range of 700–1000 °C under nitrogen ambient. The thin films have been characterized by X-ray diffraction (XRD), Fourier transform infrared spectroscopy (FT-IR), X-ray photoelectron spectroscopy (XPS) and Auger electron spectroscopy (AES). The results showed that the samples were amorphous until they were annealed at 1000...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/0957-4484/18/44/445605">
+    <div class = "title">Growth of nearly one nanometer large silicon particles in silicon carbide and their quantum-confined photoluminescence features</div>
+    <div><span class = "journal">Nanotechnology</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">Silicon particles approaching the size of 1 nm were grown along with the confining SiC films by employing a low-temperature chemical vapor deposition procedure. The resulting amorphous composite structure enables an experimental study of the quantum confinement effect in extremely narrow potential wells, as exemplified here by photoluminescence measurement. Owing to the enhanced energy fluctuation for such small particles, strong photoluminescence centered at 450–540 nm, and of comparable profiles, was...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/0040-6090(95)06599-7">
+    <div class = "title">Raman and Rutherford backscattering analyses of cubic SiC thin films grown on Si by vertical chemical vapor deposition</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">1995</span></div>
+    <div class = "abstract">A combined Raman scattering and Rutherford backscattering (RBS) study on both polycrystalline and single-crystalline cubic (3C-) SiC thin films grown on (100) Si by vertical chemical vapor deposition (V-CVD) is presented. The V-CVD growth was performed using a new system with a vertical reactor and a rotating susceptor. The Raman spectra show the presence of cubic-phase transverse optical (TO) and longitudinal optical (LO) phonon modes at the Γ point which are characteristic of both poly- and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.3700422">
+    <div class = "title">The Influence of Carbon on the Structure and Photoluminescence of Amorphous Silicon Carbonitride Thin Films</div>
+    <div><span class = "journal">ECS Transactions</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">A systematic study on silicon carbonitride matrices has been carried out to determine contributions of carbon on their luminescence process, chemical composition, and electronic structural properties. Thin films were deposited by electron cyclotron resonance plasma enhanced chemical vapor deposition using SiH4, N2, and CH4 process gases. The film structure and composition were determined through Rutherford backscattering spectrometry (RBS), elastic recoil detection (ERD), photoluminescence (PL), Fourier...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1742-6596/987/1/012029">
+    <div class = "title">Structural and optical properties of SiC-SiO<sub>2</sub> nanocomposite thin films</div>
+    <div><span class = "journal">Journal of Physics: Conference Series</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">This study deals with the deposition of thin films of a SiC-SiO2nanocomposite deposited on silicon substrates. The deposition is carried out by a co-sputtering RF magnetron 13.56 MHz, using two targets a polycristallin 6H-SiC and sprigs of SiO2. In order to study the influence of the deposition time on the morphology, the structural and optical properties of the thin films produced, two series of samples were prepared, namely a series A with a 30 min deposition time and a series B of one hour duration. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jmrt.2021.08.043">
+    <div class = "title">Study on photoelectricity properties of SiCN thin films prepared by magnetron sputtering</div>
+    <div><span class = "journal">Journal of Materials Research and Technology</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">SiCN thin film is one of the most attractive silicon-based materials due to its excellent electrical, mechanical and optical properties. In this study, SiCN thin films have been prepared by the radio frequency reactive magnetron sputtering method under different sputtering power, pressure, and substrate temperature. The microstructure, morphology, and the optical and field emission properties of SiCN thin films were performed. The results indicated that the high-quality SiCN thin films have been...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1155/2012/368268">
+    <div class = "title">Optical and Structural Properties of Silicon Nanocrystals Embedded in SiO<sub><i>x</i></sub> Matrix Obtained by HWCVD</div>
+    <div><span class = "journal">Journal of Nanomaterials</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">The interest in developing optoelectronic devices integrated in the same silicon chip has motivated the study of Silicon nanocrystals (Si-ncs) embedded in SiO x (nonstoichiometric silicon oxides) films. In this work, Si-ncs in SiO x films were obtained by Hot Wire Chemical Vapor Deposition (HWCVD) at 800, 900, and 1000°C. The vibration modes of SiO x films were determined by FTIR measurements. Additionally, FTIR and EDAX were related to get the proper composition of the films. Micro-Raman studies in the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1139/cjp-2013-0594">
+    <div class = "title">Optical transition in nanocrystalline Si doped SiO<sub>2</sub> thin films formed by cosputtering</div>
+    <div><span class = "journal">Canadian Journal of Physics</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">Optical transition properties of nanocrystalline silicon (nc-Si) doped SiO 2 thin films prepared by cosputtering with SiO 2 target and Si-chips followed by high temperature annealing were investigated as a function of ratio of target area (Si/SiO 2 ) in the range of 0 to 0.19. Optical transmission measurements revealed that the indirect band-gap of nc-Si decreased from 4.87 to 2.32 eV with increasing Si/SiO 2 from 0.04 to 0.19, whereas no noticeable absorption was observed for the samples with Si/SiO 2 =...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.ssc.2010.02.032">
+    <div class = "title">Structural and photoluminescence properties of silicon nanocrystals embedded in SiC matrix prepared by magnetron sputtering</div>
+    <div><span class = "journal">Solid State Communications</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">Si nanocrystals (NCs) embedded in an SiC matrix were prepared by the deposition of Si-rich Si1−xCx/SiC nanomultilayer films using magnetron sputtering, subsequently followed by thermal annealing in the range of 800∼1200 °C. As the annealing temperature increases to 1000 °C, Si NCs begin to form and SiC NCs also start to emerge at the annealing temperature of 1200 °C. With the increase of annealing temperature, two photoluminescence (PL) peaks have an obvious redshift. The intensity of the low-energy...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.834822">
+    <div class = "title">Nanocrystalline silicon quantum dots thin films prepared by magnetron reaction sputtering</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Silicon is a kind of excellent semiconductor material and is one of the core material of microelectronics. But it is not a fine luminescent material. The photoluminescence(PL) will be obtained by excitation only when the size of silicon partials reduced to a certain value. Nanocrystalline silicon films have special structure and many excellent optoelectronic properties and are supposed to be applied in optoelectronic devices and large scale integrated circuits. In this paper, Nanocrystalline silicon films...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jlumin.2016.10.029">
+    <div class = "title">The effect of deposition processing on structural and luminescent properties of a-SiOC:H thin films fabricated by RF-magnetron sputtering</div>
+    <div><span class = "journal">Journal of Luminescence</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">Amorphous silicon oxicarbide thin films (a-SiOC(:H)) were deposited by RF-magnetron sputtering using Si or SiC target in Ar/CH4/O2 flow. Interatomic bonding and light emission properties were analyzed by FTIR in transmission and attenuation total reflection (ATR) mode, Raman scattering and photoluminescence spectroscopy. Comparison of the results obtained by FTIR and ATR allows us to suggest that structural properties of the near-surface region and the bulk of the films are significantly different. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2008.05.133">
+    <div class = "title">The structure and photoluminescence properties of Cr-doped SiC films</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Cr-doped SiC films are prepared by the RF-magnetron sputtering technique on Si substrates with a composite target of a single-crystalline SiC containing several Cr pieces on the surface. The as-deposited films are annealed in the temperature of 1000 °C under nitrogen ambient. The structure of the samples has been characterized by X-ray diffraction (XRD), scanning electron microscope (SEM), X-ray photoelectron spectroscopy (XPS), and Raman scattering measurement. The results show that the SiC crystal is...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2019.07.019">
+    <div class = "title">Effect of stacking fault nanolayers on the photoluminescence properties of SiC nanowires</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Two types of SiC nanowires were synthesized via carbothermal reduction and subsequent wet chemical etching. Both SiC nanowires consisted of cubic β-SiC and exhibited numerous stacking fault nanolayers. The etching process was very selective to the stacking fault nanolayers and β-SiC; β-SiC was gradually corroded; however, the stacking faults were retained. Three strong and distinct photoluminescence (PL) emission peaks emerged in the PL spectra of both types of SiC nanowires as the excitation wavelength...</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

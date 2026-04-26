@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Improvement of Physical and Electrical Characteristics in 4H-SiC MOS Capacitors Using AlON Thin Films Fabricated via Plasma-Enhanced Atomic Layer Deposition</div>
+
+                <div>Materials, 2025</div>
+
+                <div class = "abstract"><jats:p>In this study, we investigate the improvement of physical and electrical characteristics in 4H-silicon carbide (SiC) MOS capacitors using Aluminum Oxynitride (AlON) thin films fabricated via Plasma-Enhanced Atomic Layer Deposition (PEALD). AlON thin films are grown on SiC substrates using a high ratio of NH3 and O2 as nitrogen and oxygen sources through PEALD technology, with improved material properties and electrical performance. The AlON films exhibited excellent thickness uniformity, with a...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.3390/ma18194531">10.3390/ma18194531 <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" >
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "https://www.mdpi.com/1996-1944/18/19/4531/pdf?version=1759146127" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.7567/jjap.57.01ae06">
+    <div class = "title">Effect of N bonding structure in AlON deposited by plasma-assisted atomic layer deposition on electrical properties of 4H-SiC MOS capacitor</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">We have investigated the effects of the N bonding structure in an AlON layer deposited by plasma-assisted atomic layer deposition (ALD) on the electrical properties of a 4H-SiC MOS structure. The properties of defects in the AlON and SiO2 layers were investigated from the capacitance–voltage and current density–voltage (J–V) characteristics of AlON/SiO2/4H-SiC MOS structures. The density of negatively charged defects in the AlON layer decreases with increasing N content. We found that the leakage...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jcrysgro.2019.125434">
+    <div class = "title">Al(ON) gate dielectrics for 4H-SiC MOS devices</div>
+    <div><span class = "journal">Journal of Crystal Growth</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Abstract The gate dielectrics for silicon carbide based MOS devices are still crucial for their performance and reliability. Conventional thermal oxides have a poor interface quality and a low dielectric constant. To mitigate the issues brought about by conventional thermal oxidation, Al(ON) based on atomic layer deposition (ALD) technique is proposed and studied in terms of interface state density and dielectric strength/reliability. To make comparison, the results of AlN and Al2O3 grown using the same...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jnoncrysol.2005.11.076">
+    <div class = "title">Correlation of PECVD SiO N  dielectric layer structural properties and Si/SiO N /Al capacitors interface electrical properties</div>
+    <div><span class = "journal">Journal of Non-Crystalline Solids</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">Abstract In this work we produce and characterize SiO x N y films deposited by the plasma enhanced chemical vapor deposition (PECVD) technique at low temperatures from silane (SiH 4 ) nitrous oxide (N 2 O) and helium (He) as precursor gases at different deposition pressures in order to analyze the effect of this parameter on the films structural properties and on the SiO x N y /Si interface quality. In order to compare the film structural properties with the interface (SiO x N y /Si) quality, MOS...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.sse.2021.108115">
+    <div class = "title">Flat-band voltage shift of 4H-SiC MOS capacitors induced by interface dipole layer formation at the oxide-semiconductor and oxide-oxide interfaces</div>
+    <div><span class = "journal">Solid-State Electronics</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">• There was negative shift of V FB due to the dipole layer at SiO 2 /4H-SiC interface. • We successfully tuned the V FB to positive direction with additional Al 2 O 3 layer. • Al 2 O 3 fabrication process had no impact on the quality of SiO 2 /4H-SiC interface. The positive flat-band voltage (V FB ) shifts of 4H-SiC (0001) MOS capacitors with Al 2 O 3 /SiO 2 dielectric layers were systematically investigated. After nitridation, there was a negative shift of V FB due to the dipole layer at the SiO 2...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.3568869">
+    <div class = "title">(Invited) Impact of Stacked AlON/SiO<sub>2</sub> Gate Dielectrics for SiC Power Devices</div>
+    <div><span class = "journal">ECS Transactions</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">We propose the use of an aluminum oxynitride (AlON) gate insulator for SiC-based MOS power devices. Although direct deposition of AlON on 4H-SiC substrate causes electrical degradation, the fabricated MOS capacitor with AlON/SiO2 stacked gate dielectric shows no flatband voltage (VFB) shift and negligible capacitance-voltage (C-V) hysteresis. Owing to the high dielectric constant of AlON, as compared to single SiO2 insulator, significant gate leakage reduction was achieved even at high-temperatures,...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.cap.2018.04.020">
+    <div class = "title">Engineering of AlON interlayer in Al2O3/AlON/In0.53Ga0.47As gate stacks by thermal atomic layer deposition</div>
+    <div><span class = "journal">Current Applied Physics</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">Abstract The presence of an AlN interfacial layer in high-k/In0.53Ga0.47As gate stacks improves the interfacial properties and enhances the electrical performance of devices. However, pure AlN is rarely grown by atomic layer deposition (ALD) because of the low reactivity of NH3 toward the common Al-precursor and the predisposition to oxidation of the grown AlN layer. Although a plasma-enhanced ALD technique significantly suppresses the oxygen content in the grown AlN layer, the deterioration of the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2020.105161">
+    <div class = "title">Performance enhancement of Al/La2O3/ZrO2/4H–SiC MOS device with LaON as interfacial passivation layer</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">The effect of in-situ LaON surface passivation in between La2O3/ZrO2 bilayer high-k and N2 plasma pre-treated 4H–SiC substrate formed by using plasma enhanced atomic layer deposition has been investigated. The ~40 nm and ~35 nm thicknesses of high-k bilayer stack with and without LaON on SiC substrate respectively were determined by cross sectional FESEM. The FTIR and XRD results reveal that, the deposition of the La2O3 and ZrO2 as well as the formation of silicate at interface was found on both samples....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.924.486">
+    <div class = "title">Effect of Post Oxide Annealing on the Electrical and Interface 4H-SiC/Al&lt;sub&gt;2&lt;/sub&gt;O&lt;sub&gt;3&lt;/sub&gt; MOS Capacitors</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">This paper reports on the effect of forming gas annealing on the C-V characteristics and stability of Al2O3/SiC MOS capacitors deposited by atomic layer deposition, (ALD). C-V and I-V measurements were performed to assess the quality of the Al2O3 layer and the Al2O3/SiC interface. In comparison to as-deposited sample, the post oxide annealing (POA) in forming gas at high temperatures has improved the stability of C-V characteristic and the properties at the interface of Al2O3/SiC capacitors. However, the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.963.460">
+    <div class = "title">Electrical Characterization of MOCVD Grown Single Crystalline AlN Thin Films on 4H-SiC</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">We report on a very low density of interface traps at the AlN/4H-SiC interface estimated from capacitance-voltage (CV) analysis of metal-insulator-semiconductor (MIS) capacitors. Single crystalline aluminum nitride (AlN) films are grown by metal organic chemical vapor deposition (MOCVD). Current-voltage (IV) analysis shows that the breakdown electric field across the AlN dielectric is 3 MV/cm. By depositing an additional SiO 2 layer on top of the AlN layer it is possible to increase the breakdown voltage...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.858.681">
+    <div class = "title">Flatband Voltage Shift Depending on SiO&lt;sub&gt;2&lt;/sub&gt;/SiC Interface Charges in 4H-SiC MOS Capacitors with AlON/SiO&lt;sub&gt;2&lt;/sub&gt; Stacked Gate Dielectrics</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">The mechanism of flatband voltage shift in SiC metal-oxide-semiconductor (MOS) capacitors with stacked gate dielectrics consisting of aluminum oxynitride (AlON) layers and SiO 2 underlayers was investigated by varying the AlON and SiO 2 thicknesses. The flatband voltages of the fabricated capacitors with fixed SiO 2 underlayer thicknesses were almost independent of the AlON thickness, indicating the negligible charges in AlON layer. On the other hand, when varying SiO 2 underlayer thickness, the flatband...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.3390/nano10020338">
+    <div class = "title">MOS Capacitance Measurements for PEALD TiO2 Dielectric Films Grown under Different Conditions and the Impact of Al2O3 Partial-Monolayer Insertion</div>
+    <div><span class = "journal">Nanomaterials</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">In this paper, we report the plasma-enhanced atomic layer deposition (PEALD) of TiO2 and TiO2/Al2O3 nanolaminate films on p-Si(100) to fabricate metal-oxide-semiconductor (MOS) capacitors. In the PEALD process, we used titanium tetraisopropoxide (TTIP) as a titanium precursor, trimethyl aluminum (TMA) as an aluminum precursor and O2 plasma as an oxidant, keeping the process temperature at 250 °C. The effects of PEALD process parameters, such as RF power, substrate exposure mode (direct or remote plasma...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1002/pssa.201700498">
+    <div class = "title">Al<sub>2</sub>O<sub>3</sub>Insertion Layer for Improved PEALD SiO<sub>2</sub>/(Al)GaN Interfaces</div>
+    <div><span class = "journal">physica status solidi (a)</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">The development of high‐quality gate dielectric/III‐N semiconductor interfaces is indispensable to achieve high performance GaN‐based high electron mobility transistors (HEMTs). In this work, we present improved interfaces between SiO 2 and GaN (or AlGaN) with Al 2 O 3 insertion layer deposited by plasma‐enhanced atomic layer deposition (PEALD). Interface state density (D it ) and border trap density (N bt ) were characterized using UV‐assisted C–V measurement on metal‐oxide‐semiconductor...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.483-485.705">
+    <div class = "title">Electrical Properties of Aluminium Oxide Films Grown by Atomic Layer Deposition on n-Type 4H-SiC</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">In this study, electrical properties of Al2O3 deposited by Atomic Layer Deposition (ALCVD) on n-type 4H-SiC were investigated. Metal-Oxide-Semiconductor (MOS) capacitors were characterized by various electrical techniques such as Capacitance-Voltage (CV), Current- Voltage (IV) and Deep Level Transient Spectroscopy (DLTS) measurements. Two different oxidants, H2O and O3, have been used for the oxide deposition. After deposition, the flat-band voltage shift is much less using O3 than H2O (~ 7V versus ~ 20V)....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jnoncrysol.2007.08.093">
+    <div class = "title">Improved effective charge density in MOS capacitors with PECVD SiO N  dielectric layer obtained at low RF power</div>
+    <div><span class = "journal">Journal of Non-Crystalline Solids</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Abstract In this work SiO x N y films are produced and characterized. Series of samples were deposited by the plasma enhanced chemical vapor deposition (PECVD) technique at low temperatures from silane (SiH 4 ), nitrous oxide (N 2 O) and helium (He) precursor gaseous mixtures, at different deposition power in order to analyze the effect of this parameter on the films structural properties, on the SiO x N y /Si interface quality and on the SiO x N y effective charge density. In order to compare the film...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.2956046">
+    <div class = "title">Improved Density Of States and Effective Charge Density in Si/Pecvd Sioxny Interface</div>
+    <div><span class = "journal">ECS Transactions</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">SiOxNy films deposited by the PECVD (Plasma Enhanced Chemical Vapor Deposition) technique at low temperatures from silane (SiH4) nitrous oxide (N2O) and helium (He) as precursor gases at different RF power and R = N2O/SiH4, in order to produce films with good SiOxNy/Si interface quality and low effective charge density were deposited and characterized. In order to compare the film structural properties with the interface (SiOxNy/Si) quality and interface charge density MOS capacitors were fabricated using...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0038-1101(96)00101-3">
+    <div class = "title">Optimization of PECVD silicon oxynitride for silicon MIS devices with low interface state density</div>
+    <div><span class = "journal">Solid-State Electronics</span>, <span class = "year">1996</span></div>
+    <div class = "abstract">In this work SiOxNy films are produced and characterized. Series of samples were deposited by the plasma enhanced chemical vapor deposition (PECVD) technique at low temperatures from silane (SiH4), nitrous oxide (N2O) and helium (He) precursor gaseous mixtures, at different deposition power in order to analyze the effect of this parameter on the films structural properties, on the SiOxNy/Si interface quality and on the SiOxNy effective charge density. In order to compare the film structural properties with...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s1044-5803(03)00083-4">
+    <div class = "title">MOS capacitors with PECVD SiOxNy insulating layer</div>
+    <div><span class = "journal">Materials Characterization</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">Abstract In this work metal/oxide/silicon (MOS) capacitors using SiOxNy and SiO2 films with different nitrogen concentrations as gate dielectrics were deposited by the plasma-enhanced chemical vapor deposition (PECVD) technique, fabricated and characterized. These films were obtained through the variation of the N2O/SiH4 flow ratio (R) at low temperatures (∼320 °C). The refractive index results show that by varying the N2O/SiH4 flow ratio it is possible to obtain a precise control of this parameter in...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.615-617.541">
+    <div class = "title">AlON/SiO&lt;sub&gt;2&lt;/sub&gt; Stacked Gate Dielectrics for 4H-SiC MIS Devices</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">We propose the use of an aluminum oxynitride (AlON) gate insulator for 4H-SiC MIS devices. Since direct deposition of AlON on 4H-SiC substrate generates a large amount of interface charge due to an interfacial reaction, a thick AlON layer was deposited on underlying thin SiO2 thermally grown in N2O ambient. To reduce the negative fixed charge density in the aluminum oxide (Al2O3) film, we used reactive sputtering of Al in an N2/O2 gas mixture. The fabricated MIS capacitor with AlON/SiO2 stacked gate...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.858.685">
+    <div class = "title">Atomic Layer Deposition of Al&lt;sub&gt;2&lt;/sub&gt;O&lt;sub&gt;3&lt;/sub&gt; Thin Films for Metal Insulator Semiconductor Applications on 4H-SiC</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">This work reports on the growth and characterization of Al 2 O 3 films on 4H-SiC, by Plasma Enhanced-Atomic Layer Deposition (PE-ALD). Different techniques were used to investigate the morphological, structural and electrical features of the Al 2 O 3 films, both with and without the presence of a thin SiO 2 layer, thermally grown on the 4H-SiC before ALD. Capacitance-voltage measurements on MOS structures resulted in a higher dielectric constant (ε~8.4) for the Al 2 O 3 /SiO 2 /SiC stack, with respect to...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/06001.1075ecst">
+    <div class = "title">(Invited) Passivation of Al<sub>2</sub>O<sub>3</sub>/n, p-In<sub>0.53</sub>Ga<sub>0.47</sub> as Interfaces: Influence of Plasma Enhanced Atomic Layer Deposition Aluminum Nitride with Various Plasma Powers</div>
+    <div><span class = "journal">ECS Transactions</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">Plasma enhanced atomic layer deposition (PEALD) aluminum nitride (AlN) is attracting great interests as an advanced technique for high-k/III-V interfacial passivation. In this study, we demonstrate the effects of PEALD-AlN layer deposition plasma powers on the electrical properties of both n-type and p-type In 0.53 Ga 0.47 As based metal oxide semiconductor capacitors (MOSCAPs). By using PEALD-AlN as interfacial passivation layer (IPL) at the Al 2 O 3 /n, p-In 0.53 Ga 0.47 As interface, noticeable...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/icsict.2016.7998834">
+    <div class = "title">HfO2/AlN/In0.53Ga0.47As MOS devices electrical properties and reliability studies</div>
+    <div><span class = "journal">2016 13th IEEE International Conference on Solid-State and Integrated Circuit Technology (ICSICT)</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">In this article, we demonstrate plasma-enhanced atomic layer deposition (PEALD) as an effective passivation technique to establish high interfacial quality of high-k/InGaAs structures. Performing PEALD-AlN as an interfacial passivation layer (IPL), excellent capacitance-voltage (C-V) characteristics have been achieved for the HfO2/n, p-In0.53Ga0.47As MOSCAPs. The effects of AlN-IPL on the effective work function (EWF) of metal and band alignment of the HfO2/AlN/In0.53Ga0.47As structure have also been...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2019.01.045">
+    <div class = "title">The composition and interfacial properties of annealed AlN films deposited on 4H-SiC by atomic layer deposition</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">We have investigated and compared the influence of annealing temperature on composition and interfacial properties of AlN thin films deposited on 4H-SiC substrates by atomic layer deposition using trimethylaluminum (TMA) and ammonia as precursors at 400 °C. Those as-deposited films were annealed by rapid thermal annealing at 700 °C, 800 °C, 900 °C and 1000 °C for 1 min in N2 atmosphere, respectively. As the annealing temperature increased, the thickness of AlN films decreased and the refractive index...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.7567/jjap.57.06ka02">
+    <div class = "title">Implementation of atomic layer deposition-based AlON gate dielectrics in AlGaN/GaN MOS structure and its physical and electrical properties</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">Alumina incorporating nitrogen (aluminum oxynitride; AlON) for immunity against charge injection was grown on a AlGaN/GaN substrate through the repeated atomic layer deposition (ALD) of AlN layers and in situ oxidation in ozone (O3) ambient under optimized conditions. The nitrogen distribution was uniform in the depth direction, the composition was controllable over a wide range (0.5–32%), and the thickness could be precisely controlled. Physical analysis based on synchrotron radiation X-ray...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.1368869">
+    <div class = "title">Characteristics of n+ polycrystalline-Si/Al2O3/Si metal–oxide– semiconductor structures prepared by atomic layer chemical vapor deposition using Al(CH3)3 and H2O vapor</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2001</span></div>
+    <div class = "abstract">We report interface and dielectric reliability characteristics of n+ polycrystalline-silicon (poly-Si)/Al2O3/Si metal–oxide–semiconductor (MOS) capacitors. Al2O3 films were prepared by atomic layer chemical vapor deposition using Al(CH3)3 and H2O vapor. Interface state density (Dit) and dielectric reliability properties of n+ poly-Si/Al2O3/Si MOS structures were examined by capacitance–voltage, conductance, current–voltage, and time-dependent dielectric breakdown measurements. The Dit of the n+...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.645-648.507">
+    <div class = "title">Improved Electrical Properties of SiC-MOS Interfaces by Thermal Oxidation of Plasma Nitrided 4H-SiC(0001) Surfaces</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">We propose a treatment of nitrogen radical irradiation to 4H-SiC surfaces for improving thermally grown SiO2/SiC interfaces. X-ray photoelectron spectroscopy (XPS) analyses revealed that a 1.7-nm-thick nitride film was formed by nitrogen radical exposure for 30 min and that Si-N bonds were retained after subsequent 10 min oxidation. It was also confirmed by secondary ion mass spectrometry (SIMS) that nitrogen atoms were piled up at the SiO2/SiC interface for the samples fabricated by thermal oxidation for...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.tsf.2009.06.052">
+    <div class = "title">Aluminum oxynitride dielectrics for multilayer capacitors with higher energy density and wide temperature properties</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Amorphous aluminum oxynitride (AlON) possesses unique properties of high dielectric strength, high resistivity, low loss, high decomposition temperature, chemical inertness, and high thermal conductivity. These properties make it a candidate for a next generation capacitor dielectric. DC pulsed magnetron reactive sputtering is used to produce amorphous AlON films on various substrates. Dielectric properties are optimized by adjusting DC power, pulse frequency, total pressure, substrate temperature, and gas...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1361-6641/ab10f1">
+    <div class = "title">Normally-off recessed-gate AlGaN/GaN MOS-HFETs with plasma enhanced atomic layer deposited AlO
+                    <i>
+                      <sub>x</sub>
+                    </i>
+                    N
+                    <i>
+                      <sub>y</sub>
+                    </i>
+                    gate insulator</div>
+    <div><span class = "journal">Semiconductor Science and Technology</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">We developed a high-quality plasma enhanced atomic layer deposited (PEALD) aluminum oxynitride (AlOxNy) process for the metal-oxide-semiconductor (MOS) gate insulator of fully-recessed-gate AlGaN/GaN-on-Si MOS-heterojunction field-effect transistors (MOS-HFETs). It was found that the cyclic nitrogen incorporation into aluminum oxide (Al2O3) during PEALD process improved the conduction band offset at GaN interface resulting in higher forward breakdown field strength, which also contributed to suppressed...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mee.2004.10.002">
+    <div class = "title">Study of PECVD SiOxNy films dielectric properties with different nitrogen concentration utilizing MOS capacitors</div>
+    <div><span class = "journal">Microelectronic Engineering</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">In this work metal/oxide/semiconductor (MOS) capacitors with different nitrogen content SiOxNy gate dielectric are fabricated and characterized. The dielectric films are deposited by the plasma enhanced chemical vapor deposition technique from N2, N2O and SiH4 gaseous mixtures at low temperatures. The MOS capacitors were characterized by low and high frequency capacitance (C-V) measurements, from where the interface state density (Dit), the effective charge density (Neff) and the dielectric constant (k)...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4966041">
+    <div class = "title">Reduction of interface states by hydrogen treatment at the aluminum oxide/4H-SiC Si-face interface</div>
+    <div><span class = "journal">AIP Advances</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Processes to form aluminum oxide as a gate insulator on the 4H-SiC Si-face are investigated to eliminate the interface state density (DIT) and improve the mobility. Processes that do not involve the insertion or formation of SiO2 at the interface are preferential to eliminate traps that may be present in SiO2. Aluminum oxide was formed by atomic layer deposition with hydrogen plasma pretreatment followed by annealing in forming gas. Hydrogen treatment was effective to reduce DIT at the interface of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.7567/jjap.57.06ka03">
+    <div class = "title">SiO<sub>2</sub>/AlON stacked gate dielectrics for AlGaN/GaN MOS heterojunction field-effect transistors</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">Stacked gate dielectrics consisting of wide bandgap SiO2 insulators and thin aluminum oxynitride (AlON) interlayers were systematically investigated in order to improve the performance and reliability of AlGaN/GaN metal–oxide–semiconductor (MOS) devices. A significantly reduced gate leakage current compared with that in a single AlON layer was achieved with these structures, while maintaining the superior thermal stability and electrical properties of the oxynitride/AlGaN interface. Consequently,...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2019.03.025">
+    <div class = "title">Electrical characterization of high k-dielectrics for 4H-SiC MIS devices</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">We report promising results regarding the possible use of AlN or Al2O3 as a gate dielectric in 4H-SiC MISFETs. The crystalline AlN films are grown by hot wall metal organic chemical vapor deposition (MOCVD) at 1100 °C. The amorphous Al2O3 films are grown by repeated deposition and subsequent low temperature (200 °C) oxidation of thin Al layers using a hot plate. Our investigation shows a very low density of interface traps at the AlN/4H-SiC and the Al2O3/4H-SiC interface estimated from...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.2778289">
+    <div class = "title">Electrical properties of Al2O3∕4H-SiC structures grown by atomic layer chemical vapor deposition</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">Al 2 O 3 films have been deposited on n-type and p-type 4H-SiC by atomic layer chemical vapor deposition using trimethylaluminum as a precursor for aluminum and both H2O and O3 as an oxidant. After oxide deposition, annealing at different temperatures (800, 900, 1000°C) in argon atmosphere for different durations (1, 2, 3h) was performed. Bulk and interface properties of the oxide films were studied by capacitance-voltage, current-voltage, deep level transient spectroscopy, and thermally dielectric...</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

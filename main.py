@@ -1,10 +1,7 @@
 import asyncio
 import aiohttp
 from ollamafreeapi import OllamaFreeAPI
-import fitz
-import os
-import re
-import hashlib
+
 
 client = OllamaFreeAPI()
 
@@ -62,140 +59,6 @@ User query:
 
     return response.strip()
 
-PDF_CACHE = "pdf_cache"
-os.makedirs(PDF_CACHE, exist_ok=True)
-
-
-def pdf_path_from_doi(doi):
-    h = hashlib.md5(doi.encode()).hexdigest()
-    return f"{PDF_CACHE}/{h}.pdf"
-
-
-def extract_text(pdf_path):
-
-    try:
-        doc = fitz.open(pdf_path)
-
-        text = ""
-
-        for page in doc:
-            text += page.get_text()
-
-        return text
-
-    except:
-        return ""
-
-
-def extract_abstract(text):
-
-    patterns = [
-        r"abstract\s*(.*?)\n\s*(introduction|keywords)",
-    ]
-
-    for p in patterns:
-
-        m = re.search(p, text, re.IGNORECASE | re.DOTALL)
-
-        if m:
-            return m.group(1)[:1500]
-
-    return ""
-
-
-def extract_conclusion(text):
-
-    patterns = [
-        r"conclusion[s]?\s*(.*?)\n\s*(references|acknowledgment|appendix)",
-        r"discussion and conclusion[s]?\s*(.*?)\n\s*(references|acknowledgment)"
-    ]
-
-    for p in patterns:
-
-        m = re.search(p, text, re.IGNORECASE | re.DOTALL)
-
-        if m:
-            return m.group(1)[:2000]
-
-    return ""
-
-
-def extract_sections_from_pdf(pdf_path):
-
-    try:
-        doc = fitz.open(pdf_path)
-
-        text = ""
-
-        # первые 3 страницы
-        first_pages = min(3, len(doc))
-        for i in range(first_pages):
-            text += doc[i].get_text()
-
-        # последние 3 страницы
-        last_pages = max(len(doc) - 3, 0)
-        for i in range(last_pages, len(doc)):
-            text += doc[i].get_text()
-
-        abstract = extract_abstract(text)
-        conclusion = extract_conclusion(text)
-
-        return abstract, conclusion
-
-    except:
-        return "", ""
-
-async def download_pdf(session, doi):
-
-    if not doi:
-        return None
-
-    path = pdf_path_from_doi(doi)
-
-    if os.path.exists(path):
-        return path
-
-    url = f"https://sci-hub.box/{doi}"
-
-    try:
-
-        async with session.get(url, timeout=20) as r:
-
-            if r.status != 200:
-                return None
-
-            data = await r.read()
-
-            with open(path, "wb") as f:
-                f.write(data)
-
-            return path
-
-    except:
-        return None
-
-async def enrich_with_pdf(papers):
-
-    async with aiohttp.ClientSession() as session:
-
-        tasks = []
-
-        for p in papers:
-            tasks.append(download_pdf(session, p["doi"]))
-
-        pdf_paths = await asyncio.gather(*tasks)
-
-    for paper, path in zip(papers, pdf_paths):
-
-        if not path:
-            continue
-
-        abstract, conclusion = extract_sections_from_pdf(path)
-
-        if abstract:
-            paper["summary"] = abstract
-
-        paper["conclusion"] = conclusion
 
 
 
@@ -208,7 +71,12 @@ async def search_papers(query: str):
     params = {
         "query": query,
         "limit": 50,
-        "fields": "title,abstract,year,authors,url,externalIds"
+        "fields": (
+            "title,abstract,year,authors,url,"
+            "externalIds,venue,citationCount,"
+            "influentialCitationCount,fieldsOfStudy,"
+            "s2FieldsOfStudy"
+        )
     }
 
     async with aiohttp.ClientSession() as session:
@@ -230,26 +98,46 @@ async def search_papers(query: str):
     for p in data.get("data", []):
 
         title = p.get("title") or ""
-        summary = p.get("abstract") or ""
-        year = str(p.get("year") or "N/A")
+        abstract = p.get("abstract") or ""
+
+        year = p.get("year")
+        year = str(year) if year else "N/A"
+
         url = p.get("url") or ""
 
-        doi = None
-        if p.get("externalIds"):
-            doi = p["externalIds"].get("DOI")
+        # authors
+        authors = [
+            a.get("name")
+            for a in p.get("authors", [])
+            if a.get("name")
+        ]
 
-        authors = []
-        if p.get("authors"):
-            authors = [a.get("name") for a in p["authors"] if a.get("name")]
+        # DOI
+        doi = (p.get("externalIds") or {}).get("DOI")
+
+        # fieldsOfStudy
+        fields = p.get("fieldsOfStudy") or []
+
+        # s2FieldsOfStudy (очень полезно для семантики)
+        s2_fields = []
+        for f in p.get("s2FieldsOfStudy") or []:
+            if isinstance(f, dict):
+                name = f.get("category")
+                if name:
+                    s2_fields.append(name)
 
         papers.append({
             "title": title,
-            "summary": summary,
+            "summary": abstract,
             "year": year,
             "url": url,
             "authors": authors,
             "doi": doi,
-            "conclusion": "",
+
+            "fields": fields,
+            "s2_fields": s2_fields,
+
+            # для ранжирования
             "score": 0
         })
 
@@ -263,28 +151,30 @@ def rank_papers(query: str, papers):
 
         title = p["title"] or ""
         abstract = p["summary"] or ""
-        conclusion = p.get("conclusion") or ""
 
-        text = f"{title} {title} {abstract} {conclusion}"
+        fields = " ".join(p.get("fields", []))
+        s2_fields = " ".join(p.get("s2_fields", []))
+
+        text = (
+            title + " " + title +
+            abstract + " " +
+            fields + " " +
+            s2_fields
+        )
 
         texts.append(text)
 
-    if not texts:
-        return []
+    query_emb = model.encode(query, convert_to_tensor=True)
+    paper_emb = model.encode(texts, convert_to_tensor=True)
 
-    query_embedding = model.encode(query, convert_to_tensor=True)
+    scores = util.cos_sim(query_emb, paper_emb)[0]
 
-    paper_embeddings = model.encode(texts, convert_to_tensor=True)
-
-    scores = util.cos_sim(query_embedding, paper_embeddings)[0]
-
-    for i, paper in enumerate(papers):
-        paper["score"] = float(scores[i])
+    for i, p in enumerate(papers):
+        p["score"] = float(scores[i])
 
     papers.sort(key=lambda x: x["score"], reverse=True)
 
     return papers[:5]
-
 
 def apply_filters(papers, filter_text: str):
 
@@ -370,11 +260,6 @@ async def confirm_query(message: types.Message):
 
     papers = await search_papers(query)
 
-    await message.answer("📄 Загружаю PDF и анализирую статьи...")
-
-    await enrich_with_pdf(papers)
-
-
     if not papers:
         await message.answer("Ничего не найдено")
         return
@@ -402,7 +287,7 @@ async def confirm_query(message: types.Message):
             f"👨‍🔬 {authors}\n"
             f"📅 {paper['year']}\n"
             f"🎯 Релевантность: {score}\n"
-            f"🧠 {summary_ru}\n"
+            f"🧠 {summary_ru}...\n"
             f"🔗 {paper['url']}\n\n"
         )
 

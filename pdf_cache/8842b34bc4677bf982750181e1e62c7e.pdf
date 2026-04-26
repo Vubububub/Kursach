@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Low Interface Trap Density 4H-SiC MIS Structure With SiO₂ Grown by Sub- 1000 °C Intermittent Spray Hydrated Oxidation (ISHO) for UV Sensor Applications</div>
+
+                <div>IEEE Transactions on Electron Devices, 2024</div>
+
+                <div class = "abstract">A novel methodology for producing low interface trap density metal-insulator–semiconductor (MIS) structures on 4H-SiC through sub-1000 °C intermittent spray hydrated oxidation (ISHO) is proposed in this work. The study investigates the material and electrical properties of the resulting SiO2 layer, demonstrating controllable oxide thickness ranging from approximately 3 to 7 nm within an hour, while minimizing carbon clustering at the interface. Electrical analysis reveals an exceptionally low interface...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.1109/TED.2024.3486258">10.1109/TED.2024.3486258 <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" style = "display:none">
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1016/s0921-5107(03)00087-4">
+    <div class = "title">The characteristics of photo-CVD SiO2 and its application on SiC MIS UV photodetectors</div>
+    <div><span class = "journal">Materials Science and Engineering: B</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">SiO2 layers were deposited onto SiC by photo-chemical vapor deposition (photo-CVD) using deuterium (D2) lamp as the excitation source. For the photo-SiO2 deposited 500 8C, interface state density (Dit) was estimated to be 5.66/10 11 cm 2 eV 1 . With an applied electric field of 4 MV cm 1 , it was found that the leakage current was only 3.15/10 8 Ac m 2 for the photoCVD SiO2 layer prepared at 500 8C. It was also found that photo-SiO2 could effectively suppress dark current of SiC-based photodetectors (PDs)....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1021/acsomega.0c04136">
+    <div class = "title">Fabrication of Silicon Dioxide by Photo-Chemical Vapor Deposition to Decrease Detector Current of ZnO Ultraviolet Photodetectors</div>
+    <div><span class = "journal">ACS Omega</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Zinc oxide (ZnO)-based semiconductor is a promising application for ultraviolet photodetectors (UV PDs). The performance of ZnO UV PDs can be improved in two orientations: by reduction of the dark current and by increasing the photocurrent. In the study, we used two processes to prepare ZnO UV PDs: photochemical vapor deposition to fabricate silicon dioxide as an insulator layer and a radio frequency sputter system to prepare the ZnO film as an active layer. The results show that the silicon dioxide layer...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1116/1.4923083">
+    <div class = "title">High-temperature and reliability performance of 4H-SiC Schottky-barrier photodiodes for UV detection</div>
+    <div><span class = "journal">Journal of Vacuum Science &amp; Technology B, Nanotechnology and Microelectronics: Materials, Processing, Measurement, and Phenomena</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">With its wide bandgap, excellent electrical properties, and relative mature crystal growth technique, 4H-SiC is an attractive candidate material for fabricating high performance ultraviolet photodetectors, which have potential to work in harsh environments. In this work, a vertical type 4H-SiC Schottky-barrier photodiode is designed and fabricated. The photodiode exhibits very low dark current and high quantum efficiency in the entire temperature range from 25 to 200 °C. A high Schottky barrier height of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1039/c2jm30514c">
+    <div class = "title">Highly sensitive metal–insulator–semiconductor UV photodetectors based on ZnO/SiO2 core–shell nanowires</div>
+    <div><span class = "journal">Journal of Materials Chemistry</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">Highly sensitive metal–insulator–semiconductor (MIS) UV photodetectors are demonstrated based on ZnO/SiO2 core–shell nanowires. The MIS devices possess simplicity in material synthesis, technological advantages in the device design and uniqueness in the prevailing mechanism. We propose that inserting an insulating SiO2 layer between the metal and photoconductive semiconductor could significantly reduce the dark current resulting in a very high photocurrent to dark current ratio. The photoconductive...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1143/jjap.44.7913">
+    <div class = "title">Nitride-Based UV Metal–Insulator–Semiconductor Photodetector with Liquid-Phase-Deposition Oxide</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">A low-temperature (30–40°C), low-cost and reliable method of liquid phase deposition (LPD) has been employed to grow SiO 2 layers on GaN. The LPD process uses a supersaturated acid aqueous solution of hydrofluosilicic (H 2 SiF 6 ) as a source liquid and an aqueous solution of boric acid (H 3 BO 3 ) as a deposition rate controller. In this study, the LPD SiO 2 was prepared at 40°C with concentrations of H 2 SiF 6 and H 3 BO 3 at 0.2 and 0.01 M, respectively. The minimum interface-trap density, Dit, of a...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.600-603.1215">
+    <div class = "title">Schottky Barrier Lowering in 4H-SiC Schottky UV Detector</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">The Schottky barrier lowering in 4H-SiC interdigit Schottky-type UV photodiode is investigated in the presence of a thermally grown oxide layer on the exposed active area. Gain photocurrent is observed and correlated with the presence of the oxide and with the charge traps at the semiconductor/oxide interface. Photo-thermally stimulated current measurements evidenced that interface charge accumulation is optically promoted. Rise and fall photo-current measurements provided the time parameter of the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.897.622">
+    <div class = "title">Optimization of 4H-SiC Photodiodes as Selective UV Sensors</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">The spectral responsivity of 4H-SiC photodiodes was studied and optimized in this paper with the aim to realize UV photo-sensors, selectively sensitive either to harder or to softer UV radiation. The spectral selectivity of the SiC-photodiodes was achieved by optimizing doping profiles in the active regions of the photodiodes and of the anti-reflective coating. A shallow doping profile of the p + -emitter allowed an enhancement of sensitivity for hard UV radiation. Deeper doping profiles were chosen for...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1143/jjap.43.2432">
+    <div class = "title">DC and Noise Characteristics of 4H-SiC Metal–Semiconductor–Metal Ultraviolet Photodetectors</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2004</span></div>
+    <div class = "abstract">Nickel (Ni)/indium-tin-oxide (ITO) layers were proposed and deposited on SiC epitaxy layers using a DC sputtering system to improve the effective barrier height and transmittance. SiC-based metal-semiconductor-metal (MSM) ultraviolet (UV) photodetectors were also fabricated using Ni/ITO as contact electrodes. The leakage current of SiC MSM PDs was only 2.4 nA/mm 2 even at a -40 V bias. With an even larger 40 V applied bias, the photocurrent-to-dark-current contrast almost reached 4 orders of magnitude. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2020.105188">
+    <div class = "title">Distinct band UV–Visible photo sensing property of ZnO-Porous silicon (PS):p-Si hybrid MSM heterostructure</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Present article deals with fabrication of UV–Visible radiation sensing photodetector (PD) by architecting planar and sandwiched (PD1 and PD2) electrode configurations on ZnO-PS:p-Si heterostructure. PS:p-Si structure is prepared by electrochemical anodization method. Thin ZnO layer of ~162 nm is deposited on PS:p-Si substrate using pulsed DC magnetron sputtering technique. Gold (Au) is combined with Aluminium (Al) to provide rectifying Schottky contacts to the devices. Prior to device testing it is...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.sna.2020.112007">
+    <div class = "title">An optimized Graphene/4H-SiC/Graphene MSM UV-photodetector operating in a wide range of temperature</div>
+    <div><span class = "journal">Sensors and Actuators A: Physical</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Abstract In this paper,. an accurate analytical model has been developed to optimize the performance of an Interdigitated Graphene Electrode/p-silicon carbide (IGE/p-4H-SiC) Metal semiconductor Metal (MSM) photodetector operating in a wide range of temperatures. The proposed model considers different carrier loss mechanisms and can reproduce the experimental results well. An overall assessment of the electrodes geometrical parameters’ influence on the device sensitivity and speed performances was...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/essderc.2012.6343376">
+    <div class = "title">Extreme temperature 4H-SiC metal-semiconductor-metal ultraviolet photodetectors</div>
+    <div><span class = "journal">2012 Proceedings of the European Solid-State Device Research Conference (ESSDERC)</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">This work demonstrates high-temperature operation of metal-semiconductor-metal photodetectors (MSM PDs) using lightly Al-doped epitaxial 4H-SiC thin films. The responsivity of the PDs under 325 nm illumination is 0.116 A/W at a 20 V bias at room temperature. The photo-to-dark current ratio of SiC MSM PDs is as high as 1.3×105 at 25°C and is 22 at 400°C. The rise time of PDs is increased slightly from 594 μs to 684 μs from room temperature to 400°C. These results support the use of 4H-SiC thin films...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.740-742.741">
+    <div class = "title">Novel Approach for Improving Interface Quality of 4H-SiC MOS Devices with UV Irradiation and Subsequent Thermal Annealing</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">We report on the harmful impact of ultraviolet (UV) light irradiation on thermally grown SiO2/4H-SiC(0001) structures and its use in subsequent thermal annealing for improving electrical properties of SiC-MOS devices. As we previously reported &#x5B;1&#x5D;, significant UV-induced damage, such as positive flatband voltage shift and hysteresis in capacitance-voltage curves as well as increased interface state density, was observed for SiC-MOS devices with thermally grown oxides. Interestingly, the subsequent...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/jsen.2011.2160848">
+    <div class = "title">The Poly-SiC MSM Photodiode on Ceramic SiC Substrate for Low-Cost Ultraviolet Light Sensing Applications</div>
+    <div><span class = "journal">IEEE Sensors Journal</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Pseudo 6H poly-SiC (P6H-SiC) films are deposited on the pressureless-sintering ceramic SiC substrate by rapid thermal chemical vapor deposition technology to develop metal-semiconductor-metal (MSM) photodetectors (PD) for low-cost and high-performance ultraviolet (UV) detecting applications. The sensing performances of the Au/P6H-SiC/ceramic-SiC MSM PD were examined by measurement of photo and dark currents with and without the irradiation of 366 and 254 nm UV lights. At room temperature/250°C, the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.5044678">
+    <div class = "title">Enhanced irradiance sensitivity of 4H-SiC based ultraviolet sensor introducing laterally gated Al/SiO2/SiC tunnel diode structure with low gate bias</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">A laterally gated Al/SiO2/SiC structure composed of an inner circular tunnel diode (TD) and an outer annular TD is investigated in this work to demonstrate the improved ultraviolet (UV) response in comparison with a single metal–oxide–semiconductor (MOS) TD or a conventional photodiode scheme. The current of the inner TD (ID) can interrelate with the bias of the outer TD (VG) against the voltage of inner TD (VD). This coupling effect will increase if the outer TD is negatively biased, thereby...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.556-557.109">
+    <div class = "title">Homoepitaxial Growth of 4H-SiC Multi-Epilayers and its Application to UV Detection</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">Homoepitaxial growth of 4H-SiC p+/π/n- multi-epilayer on n+ substrate and in-situ doping of p+ and π-epilayer have been achieved in the LPCVD system with SiH4+C2H4+H2. The surface morphologies, homogeneities and doping concentrations of the n--single-epilayers and the p+/π/n- multi-epilayers were investigated by Nomarski, AFM, Raman and SIMS, respectively. AFM and Raman investigation showed that both single- and multi-epilayers have good surface morphologies and homogeneities, and the SIMS analyses...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/drc.2017.7999445">
+    <div class = "title">Scaling of 4H-SiC p-i-n photodiodes for high temperature applications</div>
+    <div><span class = "journal">2017 75th Annual Device Research Conference (DRC)</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">Ultraviolet (UV) detection is important in astronomy, combustion detections and medical analysis. Solid-state UV detectors based on wide band gap semiconductors, such as 4H-SiC, are widely studied because of their excellent electrical properties &#x5B;1&#x5D;. 4H-SiC based UV detectors are solar blind and can be applied in extremely high temperature environments &#x5B;2&#x5D;. However, the state-of-art 4H-SiC photodetectors still have large sizes (>10000 μm2), which are not suitable to be integrated into high resolution UV...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1116/1.1542617">
+    <div class = "title">Deposition of SiO2 layers on 4H–SiC by photochemical vapor deposition</div>
+    <div><span class = "journal">Journal of Vacuum Science &amp; Technology B: Microelectronics and Nanometer Structures Processing, Measurement, and Phenomena</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">SiO 2 insulating layers were deposited onto 4H–SiC substrates by a photochemical vapor deposition (photo-CVD) technique. It was found that the SiO2 growth rate increases linearly with total SiH4/O2 density for a fixed ratio of SiH4 and O2 partial pressure, due to the increasing densities of SiH2 and excited O atoms. It was also found that the interface state density, Dit, is equal to 3.27×1012, 3.16×1012, and 5.66×1011 cm−2 eV−1 for photo-CVD SiO2 layers prepared at 150, 300, and 500 °C,...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1364/oe.23.021657">
+    <div class = "title">Electrical and ultraviolet characterization of 4H-SiC Schottky photodiodes</div>
+    <div><span class = "journal">Optics Express</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">Fabrication and electrical and optical characterization of 4H-SiC Schottky UV photodetectors with nickel silicide interdigitated contacts is reported. Dark capacitance and current measurements as a function of applied voltage over the temperature range 20 °C - 120 °C are presented. The results show consistent performance among devices. Their leakage current density, at the highest investigated temperature (120 °C), is in the range of nA/cm(2) at high internal electric field. Properties such as barrier...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4860987">
+    <div class = "title">Insights into ultraviolet-induced electrical degradation of thermally grown SiO2/4H-SiC(0001) interface</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">The harmful impact of ultraviolet (UV) light irradiation on thermally grown SiO2/4H-SiC structures was investigated by means of electrical measurements of metal-oxide-semiconductor (MOS) capacitors. Unlike Si-based MOS devices, significant electrical degradation, such as positive flatband voltage (VFB) shift and hysteresis in the capacitance-voltage (C-V) curves of SiC-MOS capacitors was induced by UV irradiation with a low-pressure mercury lamp. The interfacial fixed charge density increased with...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.457-460.1491">
+    <div class = "title">Demonstration of the First 4H-SiC Metal-Semiconductor-Metal Ultraviolet Photodector</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2004</span></div>
+    <div class = "abstract">Abstract. This paper demonstrates the first 4H-SiC metal-semiconductor-metal (MSM) UV photodetector. Two types of MSM photodetectors are fabricated for comparison: one in p-type 4HSiC and the other in n-type 4H-SiC. The n-type SiC photodetectors show a low dark current less than 10nA at -15V bias while the p-type ones show a lower dark current of 0.3nA at -25V. Photoresponsivity is measured from 200nm to 400nm and found to increase linearly with the increase of the bias. A very high peak responsivity of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/lpt.2009.2033713">
+    <div class = "title">Highly Efficient Low Reverse Biased 4H-SiC Schottky Photodiodes for UV-Light Detection</div>
+    <div><span class = "journal">IEEE Photonics Technology Letters</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Ultraviolet light detection has a wide range of scientific and industrial applications. In particular, SiC photodiodes have been proposed because of their robustness even in harsh environments, high quantum efficiency but excellent visible blindness, very low dark current, and high speed. Here, we report on the electrical and optical performances of high efficient large area 4 H-SiC Schottky photodiodes working in the photovoltaic regime. We demonstrate that the high signal-to-noise ratio along with the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/2053-1591/aa99a9">
+    <div class = "title">Photo-electrochemically synthesized light emtting nanoporous silicon based UV photodetector: influence of current density</div>
+    <div><span class = "journal">Materials Research Express</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">Nanoporous silicon (n-PSi) with diverse morphologies was prepared on silicon (Si) substrate via photo-electrochemical etching technique. The role of changing current density (15, 30 and 45 mA cm−2) on the structure, morphology and optical properties was determined. As-prepared samples were systematically characterized using XRD, FESEM, AFM and photoluminescence measurements. Furthermore, the achieved n-PSi sample was used to make metal–semiconductor–metal (MSM) UV photodetector. The performance of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/0169-4332(92)90083-a">
+    <div class = "title">UV annealing of low temperature photodeposited SiO2 films with a new powerful lamp source</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">1992</span></div>
+    <div class = "abstract">A decrease of processing temperature is essential for III–V semiconductors and in general for technology of opto-electronic devices. In this work, silicon dioxide films were deposited on Si and InP substrates using an UV-induced CVD process. SiO2 was prepared using a SiH4/O2 mixture diluted in N2, and deposition rates as high as 60 Å/min at a substrate temperature of 100°C have been obtained. The light source consists of a new xenon UV-VIS-IR lamp with wavelength ranging from 170 nm to 3 μm. This lamp...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2020.105331">
+    <div class = "title">Effects of annealing process on the structural and photodetection properties of new thin-film solar-blind UV sensor based on Si-photonics technology</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">In this paper, a new heterojunction structure based on ultrathin-film ITO sputtered on non-hydrogenated amorphous-silicon (a-Si) is developed for high-detectivity solar-blind UV-photodetector (UV-PD) based on silicon (Si) photonics technology. A strategic combination of Particle Swarm Optimization (PSO) and numerical analysis is used to find out the best design offering superior optoelectronic performance. The optimized design is then elaborated using RF magnetron sputtering technique. A comprehensive...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0038-1101(02)00234-4">
+    <div class = "title">4H-SiC metal–semiconductor–metal ultraviolet photodetectors with Ni/ITO electrodes</div>
+    <div><span class = "journal">Solid-State Electronics</span>, <span class = "year">2002</span></div>
+    <div class = "abstract">Abstract Indium–tin-oxide (ITO), Ni/ITO and Ni layers were deposited onto glass and/or SiC substrates by DC sputtering under different deposition conditions. SiC-based metal–semiconductor–metal (MSM) ultraviolet (UV) photodetectors were also fabricated using these materials as contract electrodes. It was found that ITO film deposited without oxygen gas could provide us a better optical property and a better electrical property. It was also found that the dark current of the ITO/SiC MSM UV...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/led.2003.816577">
+    <div class = "title">The hetero-epitaxial SiCN/Si MSM photodetector for high-temperature deep-UV detecting applications</div>
+    <div><span class = "journal">IEEE Electron Device Letters</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">A visible-blind ultraviolet (UV) photodetector (PD) with metal-semiconductor-metal (MSM) structure has been developed on a cubic-crystalline SiCN film. The cubic-crystalline SiCN film was deposited on Si substrate with rapid thermal chemical vapor deposition (RTCVD). The optoelectron performances of the SiCN-MSM PD have been examined by the measurement of photo and dark currents and the currents' ratio under various operating temperatures. The current ratio for 254-nm UV light of the detector is about 6.5...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.optcom.2014.07.071">
+    <div class = "title">High-performance 4H-SiC-based p-i-n ultraviolet photodiode and investigation of its capacitance characteristics</div>
+    <div><span class = "journal">Optics Communications</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">We report on high-performance 4H-SiC-based p-i-n ultraviolet (UV) photodiodes and investigation of the capacitance characteristics. The fabricated p-i-n photodiode exhibits a large UV-to-visible rejection ratio (R266 nm/R380 nm) while displaying a low dark current and a high responsivity at room temperature. Interestingly, even at 450 k, the photodiode presents a high responsivity of 0.15 A/W and high UV-to-visible rejection ratio more than 200. Capacitance-voltage measurements reveal that the 4H-SiC p-i-n...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/led.2016.2618122">
+    <div class = "title">550 °C 4H-SiC p-i-n Photodiode Array With Two-Layer Metallization</div>
+    <div><span class = "journal">IEEE Electron Device Letters</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">The p-i-n ultraviolet (UV) photodiodes based on 4H-SiC have been fabricated and characterized from room temperature (RT) to 550 °C. Due to bandgap narrowing at higher temperatures, the photocurrent of the photodiode increases by 9 times at 365 nm and reduces by 2.6 times at 275 nm from RT to 550 °C. Moreover, a 4H-SiC p-i-n photodiode array has been fabricated. Each column and row of the array is separately connected by two-layer metallization.</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/isdrs.2007.4422251">
+    <div class = "title">Sensing characteristics of a novel MISiC Schottky-diode hydrogen sensor with HfO&lt;inf&gt;2&lt;/inf&gt; as gate insulator</div>
+    <div><span class = "journal">2007 International Semiconductor Device Research Symposium</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">A novel Schottky-diode hydrogen sensor with high-k material HfO2 as gate insulator has been fabricated and studied. The influences of hydrogen concentration and temperature on hydrogen-sensing performance of the device are investigated. Experimental results show that the sensor demonstrates high sensitivity, rapid and stable response, especially at a high operating temperature of 300degC. These sensing characteristics provide the sensor potential applications for detecting hydrogen leakage in harsh...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/ted.2016.2555859">
+    <div class = "title">Investigation of TiO<sub>2</sub>-Based MISIM Ultraviolet Photodetectors With Different Insulator Layer Thickness by Ultrasonic Spray Pyrolysis Deposition</div>
+    <div><span class = "journal">IEEE Transactions on Electron Devices</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">This work uses ultrasonic spray pyrolysis deposition to grow titanium dioxide and aluminum oxide (Al2O3) films, respectively, as an active layer and an insulator layer of the metal–insulator–semiconductor–insulator–metal (MISIM) photodetector (PD). 10-, 20-, and 30-nm-thick Al2O3 films were deposited and the $I$ – $V$ characteristics in the dark and under illumination were measured and investigated. The dark current was suppressed to 11.6 pA for the MISIM PD with the 30-nm Al2O3. In addition, the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.5111679">
+    <div class = "title">High performance metal-insulator-semiconductor-insulator-metal photodetector fabricated on a silicon-on-oxide substrate</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">We demonstrate a planar metal-insulator-semiconductor-insulator-metal (MISIM) photodetector fabricated on a silicon-on-insulator substrate where the insulator is a stack of SiO2 and HfO2. The detector exhibits an extremely low dark current, as well as a large sensitivity and responsivity for wavelengths in the 365–880 nm range. The current-voltage (I−V) characteristics under moderate illumination intensities are superlinear and saturate at high powers. This behavior is due to a space charge limited...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.2190513">
+    <div class = "title">The role of ultra-thin SiO<sub>2</sub>layers in metal-insulator-semiconductor (MIS) photoelectrochemical devices (Presentation Recording)</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">Solid-state junctions based on a metal-insulator-semiconductor (MIS) architecture are of great interest for a number of optoelectronic applications such as photovoltaics, photoelectrochemical cells, and photodetection. One major advantage of the MIS junction compared to the closely related metal-semiconductor junction, or Schottky junction, is that the thin insulating layer (1-3 nm thick) that separates the metal and semiconductor can significantly reduce the density of undesirable interfacial mid-gap...</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

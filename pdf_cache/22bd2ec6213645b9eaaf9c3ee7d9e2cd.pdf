@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Metrological and Electrical Characterization of Si-Doped Al-Polar and N-Polar Epitaxial AlN Films</div>
+
+                <div>ECS Meeting Abstracts, 2025</div>
+
+                <div class = "abstract"><jats:p>
+                    With the largest tunable bandgap in the III-N class of semiconductors (6.02eV) and high thermal conductivity, aluminum nitride (AlN) has immense potential for use in high power electronics, heat sinks, and UV detectors. N-type doping of molecular beam epitaxy (MBE) and metal organic chemical vapor deposition (MOCVD) heteroepitaxially grown AlN is typically achieved with Si, a donor in AlN, with a typical ionization energy of approximately 300 meV
+                   ...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.1149/ma2025-02331674mtgabs">10.1149/ma2025-02331674mtgabs <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" style = "display:none">
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1016/j.spmi.2016.04.040">
+    <div class = "title">Effects of Si-doping on structural, electrical, and optical properties of polar and non-polar AlGaN epi-layers</div>
+    <div><span class = "journal">Superlattices and Microstructures</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Abstract The polar (0001)-oriented c -plane and non-polar ( 11 2 ¯ 0 ) -oriented a -plane wurtzite AlGaN epi-layers were successfully grown on polar (0001)-oriented c -plane and semi-polar ( 1 1 ¯ 02 ) -oriented r -plane sapphire substrates, respectively with various Si-doping levels in a low pressure metal organic chemical vapor deposition (MOCVD) system. The morphological, structural, electrical, and optical properties of the polar and non-polar AlGaN epi-layers were studied with scanning electron...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.525752">
+    <div class = "title">Time-resolved photoluminescence studies of Si- and Mg-doped AlN epilayers</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2004</span></div>
+    <div class = "abstract">Si and Mg-doped AlN epilayers were grown by metal-organic chemical vapor deposition (MOCVD) on sapphire substrates. Deep ultraviolet (UV) picosecond time-resolved photoluminescence (PL) spectroscopy has been employed to study the optical transitions in the grown epilayers. The donor bound exciton (or I 2 ) transition was found to be the dominant recombination line in Si-doped AlN epilayers at 10 K and its emission intensity decreases with increasing Si dopant concentration. Doping induced band-gap...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.3374444">
+    <div class = "title">Probing the relationship between structural and optical properties of Si-doped AlN</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">Much efforts have been devoted to achieve conductivity control in the ultrahigh band gap (∼6.1 eV) AlN by Si doping. The effects of Si-doping on the structural and optical properties of AlN epilayers have been investigated. X-ray diffraction studies revealed that accumulation of tensile stress in Si-doped AlN is a reason for the formation of additional edge dislocations. Photoluminescence (PL) studies revealed that the linewidths of both band-edge and impurity related transitions are directly correlated...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0040-6090(96)09395-9">
+    <div class = "title">High quality optoelectronic grade epitaxial AlN films on α-Al2O3, Si and 6H-SiC by pulsed laser deposition</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">1997</span></div>
+    <div class = "abstract">AlN is one of the most important optoelectronic materials in the wide band gap III–V semiconductors because of its wide and tunable energy band gap in conjunction with other nitrides, high thermal conductivity, doping capabilities, and high hardness. The proposed optoelectronic devices require high quality epitaxial films on various substrates. Here, we present our recent work on the fabrication of high quality epitaxial AlN films on Al2O3(0001), Si(111) and 6H-SiC(0001) by pulsed laser deposition (PLD)....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.1616199">
+    <div class = "title">Photoluminescence studies of Si-doped AlN epilayers</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">Si-doped AlN epilayers were grown by metalorganic chemical vapor deposition on sapphire substrates. Deep ultraviolet picosecond time-resolved photoluminescence (PL) spectroscopy has been employed to study the optical transitions in the grown epilayers. The donor bound exciton (or I2) transition was found to be the dominant recombination line in Si-doped AlN epilayers at 10 K and its emission intensity decreases with increasing Si dopant concentration. Doping-induced PL emission linewidth broadening and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4807906">
+    <div class = "title">Impacts of Si-doping and resultant cation vacancy formation on the luminescence dynamics for the near-band-edge emission of Al0.6Ga0.4N films grown on AlN templates by metalorganic vapor phase epitaxy</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">Luminescence dynamics for the near-band-edge (NBE) emission peak at around 250 nm of c-plane Si-doped Al0.6Ga0.4N films grown on AlN templates by low-pressure metalorganic vapor phase epitaxy were studied using deep ultraviolet time-resolved photoluminescence and time-resolved cathodoluminescence spectroscopies. For the films with the Si-doping concentration, &#x5B;Si&#x5D;, lower than 1.9 × 1017 cm–3, the doping lessened the concentration of cation vacancies, &#x5B;VIII&#x5D;, through the surfactant effect or the aid of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jcrysgro.2020.125730">
+    <div class = "title">Hydride vapor phase epitaxy of Si-doped AlN layers using SiCl4 as a doping gas</div>
+    <div><span class = "journal">Journal of Crystal Growth</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Growth of Si-doped AlN layers by hydride vapor phase epitaxy on AlN/sapphire templates prepared by metalorganic vapor phase epitaxy and bulk AlN substrates prepared by physical vapor transport was investigated using silicon tetrachloride (SiCl4) as a doping gas. On the AlN/sapphire templates, when the SiCl4 supply was low, the incorporation ratio of Si decreased due to the influence of O impurities resulting from the decomposition of the sapphire. In addition, pits were formed on the surfaces, and the pit...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2015.11.003">
+    <div class = "title">Effects of Si-doping on structural and electrical characteristics of polar, semi-polar, and non-polar AlGaN epi-layers</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Abstract The effects of Si-doping on the structural and electrical properties of the wurtzite AlGaN epi-layers grown on polar, semi-polar, and non-polar sapphire substrates by metal organic chemical vapor deposition (MOCVD) were studied with X-ray diffraction, scanning electron microscopy, and hall effect measurement. The characterization results showed that both the surface morphology and the crystal quality of the polar AlGaN samples grown on a-plane sapphire substrates was improved with increasing Si...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1021/acs.cgd.2c01275">
+    <div class = "title">Unexpected Realization of N-Polar AlN Films on Si-Face 4H–SiC Substrates Using RF Sputtering and High-Temperature Annealing</div>
+    <div><span class = "journal">Crystal Growth &amp; Design</span>, <span class = "year">2023</span></div>
+    <div class = "abstract">In this study, we demonstrated AlN films with unexpected N-polarity on Si-face 4H–SiC substrates using RF reactive magnetron sputtering and post high-temperature annealing (HTA). It is found that HTA-AlN sputtered with pure nitrogen or mixed gases of nitrogen and trace oxygen exhibits undoubtable N polarity, which appears to contradict the common assumption of Al-polar AlN on Si-face SiC. The interfacial studies of HTA-AlN sputtered with pure N2 reveal that the naturally oxidized SiC surface induces the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/isdrs.2009.5378040">
+    <div class = "title">Characterization of nanometer scale compositionally inhomogeneous AlGaN active regions on bulk AlN substrates</div>
+    <div><span class = "journal">2009 International Semiconductor Device Research Symposium</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Despite the recent progress in the development of III-Nitride semiconductor based ultraviolet light emitting diodes (UVLEDs), commercially available devices emitting at wavelengths shorter than 370 nm still suffer from poor wall plug efficiencies on the order of ~ 1%. One factor limiting the performance of these devices is the presence of a high density of dislocations that arise from the typical heteroepitaxial growth on c-plane sapphire substrates that result in non-radiative recombination. Previously we...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.ijleo.2015.08.218">
+    <div class = "title">Crack-free Si-doped n-AlGaN film grown on sapphire substrate with high-temperature AlN interlayer</div>
+    <div><span class = "journal">Optik</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">Abstract The crack-free Si-doped n-Al 0.28 Ga 0.72 N epitaxial films with high-temperature (HT) AlN interlayer were successfully grown on c-plane sapphire substrate by metal-organic chemical vapor deposition (MOCVD). The high resolution X-ray diffraction (XRD) measurement results demonstrate that the density of dislocations was reduced significantly with the insertion of the HT-grown AlN interlayer between the low-temperature (LT)-grown AlN buffer layer and the n-AlGaN epitaxial film. Room temperature (RT)...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.spmi.2016.08.038">
+    <div class = "title">High temperature electrical transport study of Si-doped AlN</div>
+    <div><span class = "journal">Superlattices and Microstructures</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Electrical transport (resistivity and Hall Effect) have been studied in silicon doped aluminum nitride (AlN) thick epitaxial layers from 250 K up to 1000 K. The investigated samples, grown by molecular beam epitaxy were characterized by n-type conduction with an ambient temperature free carrier concentration of about ∼ 1 × 1015 cm−3. The donor level, situated about 250 meV below the conduction band edge, was found to be responsible for the experimentally observed increase of free carrier concentration...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/0256-307x/28/2/027301">
+    <div class = "title">Properties of Si Doped Al
+                    <sub>0.4</sub>
+                    Ga
+                    <sub>0.6</sub>
+                    N Epilayers with Different AlGaN Window Layer Grown on High Quality AlN Buffer by MOCVD</div>
+    <div><span class = "journal">Chinese Physics Letters</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Si-doped Al0.4Ga0.6N (Si-Al0.4Ga0.6N) epilayers grown on an AlGaN window layer (WL) with different Al contents are prepared using a high-quality AlN buffer layer by metal-organic chemical vapor deposition. Surface morphology, crystalline quality and electric properties of these epilayers are investigated by using atomic force microscopy, x-ray diffraction, Raman scattering spectrum and Hall techniques. Results show that the surface morphology of these epilayers are mainly determined by the Si-doping level...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2020.105270">
+    <div class = "title">Properties of Si-doped a-plane AlGaN layers</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Abstract The non-polar a-plane (11 2 ¯ 0) n-type AlGaN epi-layers with high electron concentration were successfully grown on r-plane (1 1 ¯ 02) sapphire substrates by metal organic chemical vapor deposition. High-resolution X-ray diffraction, room temperature photoluminescence spectrum, and Hall effect measurement were used to examine the influence of Si-doping on the crystalline quality, and the optical and electrical characteristics of the non-polar a-plane n-AlGaN epi-layer, respectively. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/5.0042857">
+    <div class = "title">High <i>n</i>-type conductivity and carrier concentration in Si-implanted homoepitaxial AlN</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">We demonstrate Si-implanted AlN with high conductivity (&amp;gt;1 Ω−1 cm−1) and high carrier concentration (5 × 1018 cm−3). This was enabled by Si implantation into AlN with a low threading dislocation density (TDD) (&amp;lt;103 cm−2), a non-equilibrium damage recovery and dopant activation annealing process, and in situ suppression of self-compensation during the annealing. Low TDD and active suppression of VAl-nSiAl complexes via defect quasi Fermi level control enabled low compensation, while...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.715046">
+    <div class = "title">Achieving conductive high Al-content AlGaN alloys for deep UV photonics</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">Recent progresses in epitaxial growth and fundamental studies on electrical and optical properties of high Al-content
+AlGaN alloys with Si, Mg, and Zn doping are presented. For Si doped AlxGa1-xN, the Si activation energy was
+determined for x = 0 up to 1, and the resistivity of n-AlxGa1-xN was found to increases by one order of magnitude when
+Al content is increased by ~ 8%. From photoluminescence (PL) studies, three groups of deep impurity transitions were
+observed, related with deep level acceptors...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.483961">
+    <div class = "title">III-nitrate ultraviolet photonic materials: epitaxial growth, optical and electrical properties, and applications</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">This paper summarizes some of the recent advances made by our group on the growth, characterization and applications of AlGaN alloys with high Al contents. Recently, our group has achieved highly conductive n-type Al<sub>x</sub>Ga<sub>1-x</sub>N for x as high as 0.7 (a resistivity value as low as 0.15 ohm-cm has been achieved). Prior to this, only insulating Al<sub>x</sub>Ga<sub>1-x</sub>N (x &gt; 0.5) can be obtained. Our success is largely attributed to our unique capability for monitoring the optical...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/5.0030825">
+    <div class = "title">Electronic degeneracy conduction in highly Si-doped Al0.6Ga0.4N layers based on the carrier compensation effect</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Electronic degeneracy to express metallic conduction in Al-rich AlGaN for the electron injection layer enhances the efficiencies of deep ultraviolet light emitters. This study systematically demonstrates the Si doping range and conditions to realize degenerate n-type Al0.6Ga0.4N layers based on the electron compensation effect. The temperature-independent electron concentrations resulting from the degenerate band appear in high Si doping conditions to overcome the electron compensation due to carbon on...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/0022-3727/48/2/025103">
+    <div class = "title">Determination of carrier lifetime and diffusion length in Al-doped 4H–SiC epilayers by time-resolved optical techniques</div>
+    <div><span class = "journal">Journal of Physics D: Applied Physics</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">A series of p-type 4H–SiC epilayers with aluminium concentration ranging from 2 × 10 16 to 8 × 10 19 cm −3 were investigated by time-resolved optical techniques in order to determine the effect of aluminium doping on high-injection carrier lifetime at room temperature and the diffusion coefficient at different injections (from ≈3 × 10 18 to ≈5 × 10 19 cm −3 ) and temperatures (from 78 to 730 K). We find that the defect limited carrier lifetime τ SRH decreases from 20 ns in the low-doped...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1402-4896/ab93a7">
+    <div class = "title">The influence of intrinsic atomic defects on the electronic and optical properties of the single layer AlN</div>
+    <div><span class = "journal">Physica Scripta</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">In this paper, we present first-principles calculations of the electronic, magnetic, and optical properties of the defective single layer AlN. Our calculations based on density functional theory demonstrate that the vacancy defects, such as removing one N atom or one Al atom from single layer AlN lead to asymmetric conditions in the transmission spectrum and semimetallic behavior. However, the single layer AlN in the presence of one N vacancy with one Al vacancy shows the semiconducting nature. The band...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/iciprm.2016.7528769">
+    <div class = "title">Spatio-time-resolved cathodoluminescence study on high AlN mole fraction Al&lt;inf&gt;x&lt;/inf&gt;Ga&lt;inf&gt;1−x&lt;/inf&gt;N structures grown by metalorganic vapor phase epitaxy</div>
+    <div><span class = "journal">2016 Compound Semiconductor Week (CSW) [Includes 28th International Conference on Indium Phosphide &amp; Related Materials (IPRM) &amp; 43rd International Symposium on Compound Semiconductors (ISCS)</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Concept, equipment, and exploitation of spatio-time-resolved cathodoluminescence (STRCL) spectroscopy will be presented. As one of its advantages is unlimited bandgap energy of the sample, we show STRCL data of high AlN mole fraction Al x Ga 1−x N structures. For understanding the mechanisms of the improvement in the luminescence efficiency of Al 0.68 Ga 0.32 N / Al 0.77 Ga 0.23 N multiple quantum wells by proper Si-doping in the wells, STRCL measurements and self-consistent Schrodinger-Poisson...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2008.11.063">
+    <div class = "title">Enhanced field emission from Si doped nanocrystalline AlN thin films</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Si doped and undoped nanocrystalline aluminum nitride thin films were deposited on various substrates by direct current sputtering technique. X-ray diffraction analysis confirmed the formation of phase pure hexagonal aluminum nitride with a single peak corresponding to (1 0 0) reflection of AlN with lattice constants, a = 0.3114 nm and c = 0.4986 nm. Energy dispersive analysis of X-rays confirmed the presence of Si in the doped AlN films. Atomic force microscopic studies showed that the average particle...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1674-1056/25/5/057703">
+    <div class = "title">Observation of positive and small electron affinity of Si-doped AlN films grown by metalorganic chemical vapor deposition on n-type 6H–SiC</div>
+    <div><span class = "journal">Chinese Physics B</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">We have investigated the electron affinity of Si-doped AlN films (N Si = 1.0 × 1018–1.0 × 1019 cm−3) with thicknesses of 50, 200, and 400 nm, synthesized by metalorganic chemical vapor deposition (MOCVD) under low pressure on the n-type (001)6H–SiC substrates. The positive and small electron affinity of AlN films was observed through the ultraviolet photoelectron spectroscopy (UPS) analysis, where an increase in electron affinity appears with the thickness of AlN films increasing, i.e., 0.36 eV for...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1080/10667857.2016.1241037">
+    <div class = "title">Effects of Si-doping on field emission characteristics of AlN films grown on n-type 6H-SiC by MOCVD</div>
+    <div><span class = "journal">Materials Technology</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">AbstractThe field-emission (FE) characteristics of 200 nm-thick Si-doped AlN films with different concentration of Si-dopant is investigated. It is found that the AlN film with lower concentration of Si-dopant has a smaller turn-on voltage, larger maximum current density and more stable FE current. Accompanying with atomic force surface micro-images, it is suggested that the stable current is attributed to a uniform surface, which is related a uniform local field enhancement factors and thus a stable FE...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.2126787">
+    <div class = "title">Photoconductivity of AlN films on SiC</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">The band gap and deep donor levels of bulk 6H-SiC are studied by photoconductivity and optical absorption measurements. The absorption spectrum displays two nitrogen-induced bands: one near 2 eV and another partially overlapped with the fundamental absorption of 6H-SiC at 3 eV. The low-temperature photoconductivity data reveal that the 2 eV band is due to a localized electron transition, whereas the higher-energy band involves a delocalized-electron transition from a deep center to the conduction band of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jcrysgro.2020.125847">
+    <div class = "title">Low background doping in AlInN grown on GaN via metalorganic vapor phase epitaxy</div>
+    <div><span class = "journal">Journal of Crystal Growth</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Nearly lattice-matched and unintentionally doped AlInN films with low background doping grown via metalorganic vapor phase epitaxy on GaN/sapphire are investigated. The lattice-matched condition is verified with x-ray diffraction (XRD), and the films exhibit typical morphological characteristics for AlInN. The optical constants (nr & k) and thicknesses of the AlInN films are determined via spectroscopic ellipsometry, finding an nr ~ 2.2 at 500 nm and a bandgap of ~4.366 eV. Temperature-dependent Hall...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1002/pssc.201000964">
+    <div class = "title">Progress on n‐type doping of AlGaN alloys on AlN single crystal substrates for UV optoelectronic applications</div>
+    <div><span class = "journal">physica status solidi c</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Abstract As the building blocks of deep UV light emitting diode (LED) technology and high‐power electronic devices, AlGaN alloys have attracted considerable attention. In this study, AlGaN films with varying compositions doped with Si were deposited on homoepitaxial AlN layers grown on AlN single crystal substrates. The room temperature resistivity of AlGaN alloys of different compositions grown on AlN and sapphire substrates with a constant Si doping level of 6x10 18 cm ‐3 was compared. AlGaN films...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.spmi.2016.04.020">
+    <div class = "title">Structural and optical properties of Si-doped Al0.08In0.08Ga0.84N thin films grown on different substrates for optoelectronic devices</div>
+    <div><span class = "journal">Superlattices and Microstructures</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Abstract The objective of the current study is to characterize the optoelectronic properties of quaternary n-Al 0.08 In 0.08 Ga 0.84 N thin films grown via molecular beam epitaxy (MBE) on sapphire (Al 2 O 3 ) and silicon (Si) substrates for different optoelectronic applications. Due to mismatch problems between the epilayer and substrates, the AlN buffer layer was inserted at low temperature to reduce the lattice mismatch to approximately 4% for the samples, to produce high-quality epitaxy films....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.121039">
+    <div class = "title">Near band-edge transition in aluminum nitride thin films grown by metal organic chemical vapor deposition</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">1998</span></div>
+    <div class = "abstract">Cathodoluminescence measurements were performed for carbon doped and undoped aluminum nitride thin films in the temperature range from liquid helium to room temperature. The AlN films were grown on three different substrates: 6H–SiC, 4H–SiC, and sapphire. From these samples, a strong luminescence peak surrounded by two weaker peaks in the near band-edge region, near 6 eV, was observed. For AlN on sapphire, this near band-edge transition can be further resolved into three peaks at 6.11, 5.92, and 5.82...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0925-9635(96)00626-7">
+    <div class = "title">Growth, doping and characterization of AlxGa1 − xN thin film alloys on 6H-SiC(0001) substrates</div>
+    <div><span class = "journal">Diamond and Related Materials</span>, <span class = "year">1997</span></div>
+    <div class = "abstract">Abstract Thin films of Al x Ga 1 − x N (0.05≤ x ≤0.96) having smooth surfaces were deposited directly on both vicinal and on-axis 6H-SiC(0001) substrates. Cross-sectional transmission electron microscopy of Al 0.13 Ga 0.87 N revealed stacking faults near the SiC/nitride alloy interface and numerous threading dislocations. Energy dispersive analysis, Auger electron spectroscopy (AES) and Rutherford backscattering were used to determine the compositions. These were paired with their respective...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.5116900">
+    <div class = "title">In-plane optical polarization and dynamic properties of the near-band-edge emission of an <i>m</i>-plane freestanding AlN substrate and a homoepitaxial film</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">For accelerating the development of deep-ultraviolet light-emitting diodes based on high AlN mole fraction (x) AlxGa1-xN for sterilization, disinfection, and skin therapy applications, in-plane optical polarization and dynamic properties of the near-band edge (NBE) cathodoluminescence (CL) peak of a low threading dislocation density (&amp;lt;103 cm−2) m-plane freestanding AlN substrate and a homoepitaxial film are assessed. Consistent with the polarization selection rules, the electric field (E)...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.3390/ma14164400">
+    <div class = "title">Effect of Nitrogen and Aluminum Doping on 3C-SiC Heteroepitaxial Layers Grown on 4° Off-Axis Si (100)</div>
+    <div><span class = "journal">Materials</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">This work provides a comprehensive investigation of nitrogen and aluminum doping and its consequences for the physical properties of 3C-SiC. Free-standing 3C-SiC heteroepitaxial layers, intentionally doped with nitrogen or aluminum, were grown on Si (100) substrate with different 4° off-axis in a horizontal hot-wall chemical vapor deposition (CVD) reactor. The Si substrate was melted inside the CVD chamber, followed by the growth process. Micro-Raman, photoluminescence (PL) and stacking fault evaluation...</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

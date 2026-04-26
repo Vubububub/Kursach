@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Electrical Properties of Ga<sub>2</sub>O<sub>3</sub> Schottky Barrier Diodes with and without Mesa Structure</div>
+
+                <div>ECS Meeting Abstracts, 2023</div>
+
+                <div class = "abstract"><jats:p>  	Devices based on wide bandgap (WBG) semiconductors like silicon carbide (SiC), gallium nitride (GaN), and gallium oxide (Ga<jats:sub>2</jats:sub>O<jats:sub>3</jats:sub>) are ideal for high-power electronics in harsh environments. Among the WBG semiconductors, ultrawide bandgap (UWBG) β-phase gallium oxide (Ga<jats:sub>2</jats:sub>O<jats:sub>3</jats:sub>), E<jats:sub>G</jats:sub> ≈ 4.8 eV, is emerging as a replacement for the current commercially available wide bandgap (WBG) power electronics...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.1149/ma2023-01321840mtgabs">10.1149/ma2023-01321840mtgabs <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" style = "display:none">
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1186/s11671-018-2712-1">
+    <div class = "title">An Overview of the Ultrawide Bandgap Ga2O3 Semiconductor-Based Schottky Barrier Diode for Power Electronics Application</div>
+    <div><span class = "journal">Nanoscale Research Letters</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">Gallium oxide (Ga2O3) is a new semiconductor material which has the advantage of ultrawide bandgap, high breakdown electric field, and large Baliga’s figure of merit (BFOM), so it is a promising candidate for the next-generation high-power devices including Schottky barrier diode (SBD). In this paper, the basic physical properties of Ga2O3 semiconductor have been analyzed. And the recent investigations on the Ga2O3-based SBD have been reviewed. Meanwhile, various methods for improving the performances...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1674-1056/28/3/038503">
+    <div class = "title">High performance lateral Schottky diodes based on quasi-degenerated Ga
+                    <sub>2</sub>
+                    O
+                    <sub>3</sub></div>
+    <div><span class = "journal">Chinese Physics B</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Ni/β-Ga2O3 lateral Schottky barrier diodes (SBDs) were fabricated on a Sn-doped quasi-degenerate n+-Ga2O3 bulk substrate. The resultant diodes with an area of 7.85×10−5 cm2 exhibited excellent rectifying characteristics with an ideality factor of 1.21, a forward current density (J) of 127.4 A/cm2 at 1.4 V, a specific on-state resistance (Ron,sp) of 1.54 mΩ.cm2, and an ultra-high on/off ratio of 2.1×1011 at ±1 V. Due to a small depletion region in the highly-doped substrate, a breakdown feature was...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/led.2019.2931697">
+    <div class = "title">Vertical Ga<sub>2</sub>O<sub>3</sub>Schottky Barrier Diodes With Small-Angle Beveled Field Plates: A Baliga’s Figure-of-Merit of 0.6 GW/cm<sup>2</sup></div>
+    <div><span class = "journal">IEEE Electron Device Letters</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">This letter demonstrates vertical Ga2O3 Schottky barrier diodes (SBDs) with a novel edge termination, the small-angle beveled field plate (SABFP), fabricated on thinned $\text{G}_{{2}}\text{O}_{{3}}$ substrates. Non-punch-though design is used for the drift region with a donor concentration of ${3}\sim {3.5} \times {10} ^{{16}}$ cm−3, rendering a device differential ON-resistance of $\sim 2~\text{m}\Omega ~\cdot $ cm2. A new wet-etch technique is developed by using a bi-layer mask, which consists of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/2.0041702jss">
+    <div class = "title">Electrical Characteristics of Vertical Ni/β-Ga<sub>2</sub>O<sub>3</sub>Schottky Barrier Diodes at High Temperatures</div>
+    <div><span class = "journal">ECS Journal of Solid State Science and Technology</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Vertical geometry β-Ga2O3 Schottky barrier diodes (SBDs) were fabricated and the rectifying forward and reverse current-voltage characteristics were demonstrated at elevated temperatures for a freestanding β-Ga2O3 material with an ultra-wide bandgap of ~4.9 eV. The breakdown voltage of the fabricated β-Ga2O3 SBDs with a punch-through configuration was ~210 V without the edge-termination method. The electrical field and potential distributions were numerically simulated with a finite element method. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.5132818">
+    <div class = "title">High-voltage vertical Ga2O3 power rectifiers operational at high temperatures up to 600 K</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">This work presents the temperature-dependent forward conduction and reverse blocking characteristics of a high-voltage vertical Ga2O3 power rectifier from 300 K to 600 K. Vertical β-Ga2O3 Schottky barrier diodes (SBDs) were fabricated with a bevel-field-plated edge termination, where a beveled sidewall was implemented in both the mesa and the field plate oxide. The Schottky barrier height was found to increase from 1.2 eV to 1.3 eV as the temperature increases from 300 K to 600 K, indicating the existence...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jpcs.2023.111281">
+    <div class = "title">Large-area vertical-geometry Pt/(010) β-Ga2O3 Schottky barrier diodes and their temperature-dependent electrical properties</div>
+    <div><span class = "journal">Journal of Physics and Chemistry of Solids</span>, <span class = "year">2023</span></div>
+    <div class = "abstract">Herein, vertical-geometry Pt/(010) β-Ga2O3 Schottky barrier diodes (SBDs) with various large areas (2.25 × 10−2, 4 × 10−2 to 6.25 × 10−2 cm2) were fabricated on (010) orientation β-Ga2O3 substrates. The electrical properties of different area diodes and the uniformity of diodes with the same area were analyzed. The rectifying ratio of all diodes was determined to be larger than 108 at the bias of ±2 V. The current-voltage (I–V) characteristics of SBD with an area of 2.25 × 10−2 cm2 were...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jcrysgro.2013.02.015">
+    <div class = "title">MBE grown Ga2O3 and its power device applications</div>
+    <div><span class = "journal">Journal of Crystal Growth</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">Abstract N-type gallium oxide (Ga2O3) homoepitaxial thick films were grown on β-Ga2O3 (010) substrates by molecular beam epitaxy. The epitaxial growth rate was increased by more than 10 times by changing from the (100) plane to the (010) plane. The carrier concentration of the epitaxial layers could be varied within the range of 1016–1019  cm−3 by changing the Sn doping concentration. Schottky barrier diodes (SBDs) and metal–semiconductor field-effect transistors (MESFETs) on β-Ga2O3 homoepitaxial...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1674-4926/40/1/012801">
+    <div class = "title">Temperature-dependent electrical properties of <i>β</i>-Ga<sub>2</sub>O<sub>3</sub> Schottky barrier diodes on highly doped single-crystal substrates</div>
+    <div><span class = "journal">Journal of Semiconductors</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Beta-phase gallium oxide (β-Ga2O3) Schottky barrier diodes were fabricated on highly doped single-crystal substrates, where their temperature-dependent electrical properties were comprehensively investigated by forward and reverse current density – voltage and capacitance – voltage characterization. Both the Schottky barrier height and the ideality factor showed a temperature-dependence behavior, revealing the inhomogeneous nature of the Schottky barrier interface caused by the interfacial defects....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1002/pssa.201330197">
+    <div class = "title">Development of gallium oxide power devices</div>
+    <div><span class = "journal">physica status solidi (a)</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">Gallium oxide (Ga2O3) is a strong contender for power electronic devices. The material possesses excellent properties such as a large bandgap of 4.7–4.9 eV for a high breakdown field of 8 MV cm−1. Low cost, high volume production of large single-crystal β-Ga2O3 substrates can be realized by melt-growth methods commonly adopted in the industry. High-quality n-type Ga2O3 epitaxial thin films with controllable carrier densities were obtained by ozone molecular beam epitaxy (MBE). We fabricated Ga2O3...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.3390/mi12030259">
+    <div class = "title">Electrical Characterizations of Planar Ga2O3 Schottky Barrier Diodes</div>
+    <div><span class = "journal">Micromachines</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">In this work, a Schottky barrier diode (SBD) is fabricated and demonstrated based on the edge-defined film-fed grown (EFG) Ga2O3 crystal substrate. At the current stage, for high resistance un-doped Ga2O3 films and/or bulk substrates, the carrier concentration (and other electrical parameters) is difficult to be obtained by using the conventional Hall measurement. Therefore, we extracted the electrical parameters such as on-state resistance (Ron), Schottky barrier height (ϕB), the ideal factor (n), series...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4977766">
+    <div class = "title">Schottky barrier diode based on <i>β</i>-Ga2O3 (100) single crystal substrate and its temperature-dependent electrical characteristics</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">The Pt/β-Ga2O3 Schottky barrier diode and its temperature-dependent current-voltage characteristics were investigated for power device application. The edge-defined film-fed growth (EFG) technique was utilized to grow the (100)-oriented β-Ga2O3 single crystal substrate that shows good crystal quality characterized by X-ray diffraction and high resolution transmission electron microscope. Ohmic and Schottky electrodes were fabricated by depositing Ti and Pt metals on the two surfaces, respectively....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1002/pssa.201900497">
+    <div class = "title">Vertical β‐Ga<sub>2</sub>O<sub>3</sub> Schottky Barrier Diodes with Enhanced Breakdown Voltage and High Switching Performance</div>
+    <div><span class = "journal">physica status solidi (a)</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Herein, vertical Schottky barrier diodes (SBDs) based on a bulk β-Ga2O3 substrate are developed. The devices feature an ion-implanted planar edge termination (ET) structure, which can effectively smoothen the electric field peak and reduce the electric field crowding at the Schottky junction edge. Greatly enhanced reverse blocking characteristics including ≈103× lower reverse leakage current and 1.5× higher breakdown voltage (VB) are achieved, whereas good forward conduction such as a reasonably high...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/ted.2020.3025268">
+    <div class = "title">Design of a β-Ga<sub>2</sub>O<sub>3</sub> Schottky Barrier Diode With p-Type III-Nitride Guard Ring for Enhanced Breakdown</div>
+    <div><span class = "journal">IEEE Transactions on Electron Devices</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">This work presents the electrostatic analysis of a novel Ga$_2$O$_3$ vertical Schottky diode with three different guard ring configurations to reduce the peak electric field at the metal edges. Highly doped p-type GaN, p-type nonpolar AlGaN and polarization doped graded p-AlGaN are simulated and analyzed as the guard ring material, which forms a heterojunction with the Ga$_2$O$_3$ drift layer. Guard ring with non-polar graded p-AlGaN with a bandgap larger than Ga$_2$O$_3$ is found to show the best...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.5007197">
+    <div class = "title">Characterization of the inhomogeneous barrier distribution in a Pt/(100)<i>β</i>-Ga2O3 Schottky diode via its temperature-dependent electrical properties</div>
+    <div><span class = "journal">AIP Advances</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">β-Ga2O3 is an ultra-wide bandgap semiconductor with applications in power electronic devices. Revealing the transport characteristics of β-Ga2O3 devices at various temperatures is important for improving device performance and reliability. In this study, we fabricated a Pt/β-Ga2O3 Schottky barrier diode with good performance characteristics, such as a low ON-resistance, high forward current, and a large rectification ratio. Its temperature-dependent current–voltage and capacitance–voltage...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/drc46940.2019.9046433">
+    <div class = "title">Barrier Height Stability and Reverse Leakage Mechanisms in Ni/Ga<sub>2</sub>O<sub>3</sub> (001) Schottky Barrier Diodes</div>
+    <div><span class = "journal">2019 Device Research Conference (DRC)</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Ga 2 O 3 Schottky barrier diodes (SBDs) have shown promising performance as power rectifiers recently &#x5B;1&#x5D;–&#x5B;3&#x5D;, showcasing the fast-improving material quality as well as the touted high electric field strength (6–8 MV/cm). In an SBD, the barrier height $(\mathrm{q}\phi_{\mathrm{B}})$ largely determines the turn-on voltage and the reverse leakage current. Previous studies on the barrier height of different metal contacts on Ga 2 O 3 indicate a certain level of Fermi-level pinning &#x5B;4&#x5D;, &#x5B;5&#x5D;, likely due to...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/iciprm.2016.7528795">
+    <div class = "title">Vertical Schottky barrier diodes fabricated on un-intentionally doped and Sn-doped (−201) bulk β-Ga&lt;inf&gt;2&lt;/inf&gt;O&lt;inf&gt;3&lt;/inf&gt; substrates</div>
+    <div><span class = "journal">2016 Compound Semiconductor Week (CSW) [Includes 28th International Conference on Indium Phosphide &amp; Related Materials (IPRM) &amp; 43rd International Symposium on Compound Semiconductors (ISCS)</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">In this work, we fabricate Pt, Ni and Pd vertical Schottky barrier diodes (SBDs) on bulk (−201) α-Ga 2 O 3 substrates. We fabricate the diodes on two types of Ga 2 O 3 substrates, un-intentionally doped (UID) with 1017 cm−3 electron concentration and Sn-doped with 5×1018 cm−3 electron concentration. We characterize the diodes with current-voltage (I–V), capacitance-voltage (C-V) and reverse breakdown measurements. We observe a Schottky barrier height lowering (as extracted from forward I–V...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.7567/apex.11.031101">
+    <div class = "title">Low-pressure CVD-grown β-Ga<sub>2</sub>O<sub>3</sub>bevel-field-plated Schottky barrier diodes</div>
+    <div><span class = "journal">Applied Physics Express</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">We report (010)-oriented β-Ga2O3 bevel-field-plated mesa Schottky barrier diodes grown by low-pressure chemical vapor deposition (LPCVD) using a solid Ga precursor and O2 and SiCl4 sources. Schottky diodes with good ideality and low reverse leakage were realized on the epitaxial material. Edge termination using beveled field plates yielded a breakdown voltage of −190 V, and maximum vertical electric fields of 4.2 MV/cm in the center and 5.9 MV/cm at the edge were estimated, with extrinsic R ON of 3.9...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/drc50226.2020.9135177">
+    <div class = "title">Very High Parallel-Plane Surface Electric Field of 4.3 MV/cm in Ga<sub>2</sub>O<sub>3</sub> Schottky Barrier Diodes with PtO<sub>x</sub> Contacts</div>
+    <div><span class = "journal">2020 Device Research Conference (DRC)</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">β-Ga 2 O 3 has emerged as a potentially-disruptive wide-bandgap semiconductor material for high power applications, largely due to its high breakdown electric field of ~8 MV/cm. To access the full benefit of Ga 2 O 3 , a high electric field close to the breakdown field should be sustained in devices under reverse blocking. This is a challenging task, especially given the fact that functional p-n homojunctions might never be feasible in Ga 2 O 3 . As a result, alternative reverse blocking junctions, such...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2019.02.037">
+    <div class = "title">Electrical properties of vertical GaN Schottky diodes on Ammono-GaN substrate</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">We report on electrical properties of vertical n-GaN high voltage Schottky diodes (SBDs) grown by two different techniques: Metal Organic Chemical Vapor Deposition (MOCVD) and Hydride Vapor Phase Epitaxy (HVPE) on highly-conductive n-type Ammono-GaN substrate. The thermionic emission (TE) current model has been applied for diodes parameters analysis. The fabricated SBDs exhibited a breakdown voltage of 670 V and 220 V, barrier height of 1.05 eV and 0.92 eV, ideality factor of 1.65 and 1.42 and series...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/drc.2018.8442267">
+    <div class = "title">Fast Recovery Performance of β-Ga<sub>2</sub>O<sub>3</sub> Trench MOS Schottky Barrier Diodes</div>
+    <div><span class = "journal">2018 76th Device Research Conference (DRC)</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">Gallium oxide (Ga 2 O 3 ) is promising next-generation semiconductor material for high power and low loss devices. Its wide band gap of 4.5-4.9 eV results in a high breakdown field of $\sim 8 \mathrm{MV}/\mathrm{cm}$ and Baliga's FOM of $\sim 3400$ . Among several polytypes of Ga 2 O 3 , β-Ga 2 O 3 is the most viable option that can provide cost-effective and high-quality wafers with an edge-defined film-fed growth (EFG) method &#x5B;1&#x5D;. Several groups have reported excellent electric characteristics of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/2.0211906jss">
+    <div class = "title">β-Ga<sub>2</sub>O<sub>3</sub> Thin Film Based Lateral and Vertical Schottky Barrier Diode</div>
+    <div><span class = "journal">ECS Journal of Solid State Science and Technology</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">In this work, we have compared and modeled the electrical characteristics of two different geometrical structures of unintentionally doped (UID) thin film β-Ga2O3 based Schottky barrier diodes (SBD). It was observed that a lateral SBD structure can withstand much higher breakdown voltage compared to the vertical SBD structure, but suffers from significantly higher on-resistance, which can be explained considering the differences in their geometrical configuration. The schottky barrier height was...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/ted.2020.3003292">
+    <div class = "title">Guiding Principles for Trench Schottky Barrier Diodes Based on Ultrawide Bandgap Semiconductors: A Case Study in Ga₂O₃</div>
+    <div><span class = "journal">IEEE Transactions on Electron Devices</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Ultrawide bandgap (UWBG) semiconductors such as $\beta $ -Ga2O3 can support a much higher electric field than traditional wide bandgap semiconductors, thus promising an unprecedentedly low conduction loss. However, the maximum electric field in regular Schottky barrier diodes (SBDs) is limited due to the constraint set by the reverse leakage current. On the other hand, a trench SBD structure allows for a much higher electric field to be sustained thanks to the reduced surface field (RESURF) effect. In this...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/led.2021.3089945">
+    <div class = "title">High-k Oxide Field-Plated Vertical (001) β-Ga<sub>2</sub>O<sub>3</sub>Schottky Barrier Diode With Baliga’s Figure of Merit Over 1 GW/cm<sup>2</sup></div>
+    <div><span class = "journal">IEEE Electron Device Letters</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">This paper presents vertical (001) oriented $\beta$-Ga$_2$O$_3$ field plated (FP) Schottky barrier diode (SBD) with a novel extreme permittivity dielectric field oxide. A thin drift layer of 1.7 $\mu m$ was used to enable a punch-through (PT) field profile and very low differential specific on-resistance (R$_{on-sp}$) of 0.32 m$\Omega$-cm$^{2}$. The extreme permittivity field plate oxide facilitated the lateral spread of the electric field profile beyond the field plate edge and enabled a breakdown voltage...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/2.0011907jss">
+    <div class = "title">Temperature-Dependent Electrical Characteristics of β-Ga<sub>2</sub>O<sub>3</sub>Diodes with W Schottky Contacts up to 500°C</div>
+    <div><span class = "journal">ECS Journal of Solid State Science and Technology</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">The development of thermally stable contacts capable of high temperature operation are necessary for Ga2O3 high power rectifiers. We have measured the electrical characteristics of sputter-deposited W Schottky contacts with Au overlayers for reducing sheet resistance on n-type Ga2O3 before and after device operation up to 500°C. Assuming thermionic emission is dominant, the extracted barrier height decreases with measurement temperature from 0.97 eV (25°C) to 0.39 eV (500°C) while showing little change...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.5052368">
+    <div class = "title">1230 V β-Ga2O3 trench Schottky barrier diodes with an ultra-low leakage current of &amp;lt;1 <i>μ</i>A/cm2</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">β-Ga2O3 vertical trench Schottky barrier diodes (SBDs) are realized, demonstrating superior reverse blocking characteristics than the co-fabricated regular SBDs. Taking advantage of the reduced surface field effect offered by the trench metal-insulator-semiconductor structure, the reverse leakage current in the trench SBDs is significantly suppressed. The devices have a higher breakdown voltage of 1232 V without optimized field management techniques, while having a specific on-resistance (Ron,sp) of 15...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/2.0261710jss">
+    <div class = "title">GaN Schottky Barrier Diodes on Free-Standing GaN Wafer</div>
+    <div><span class = "journal">ECS Journal of Solid State Science and Technology</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">In this paper, vertical GaN Schottky barrier diodes (SBDs) have been demonstrated on the freestanding (FS) GaN wafer. Room temperature photoluminescence shows no emission of yellow luminescence, due to the eliminating the point defects (ON, VGa). The average full width half maximum (FWHM) value of ω-scans for (0001) and (10–12) planes is 53 and 103 arcsec, respectively, as measured by high resolution X-ray diffraction; the average dislocation density at the top surface measured by cathodoluminescence is...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/led.2019.2956016">
+    <div class = "title">High-Voltage ($\overline{\text{2}}01$ ) $\beta$ -Ga<sub>2</sub>O<sub>3</sub> Vertical Schottky Barrier Diode With Thermally-Oxidized Termination</div>
+    <div><span class = "journal">IEEE Electron Device Letters</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">In this letter, a high-performance ( $\overline {{2}} 01$ ) $\beta $ -Ga2O3 vertical Schottky Barrier Diode (SBD) with a thermally oxidized termination is reported. A novel edge termination at the Schottky contact edge is formed by using thermal oxidation treatment, which reduces the electron concentration and effectively suppresses the peak electric field. By using a thermal oxidation termination, the breakdown voltage ( ${V}_{\text {br}}$ ) of $\beta $ -Ga2O3 SBD increases from 380 V to 940 V, and the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/5.0007715">
+    <div class = "title">Near-ideal reverse leakage current and practical maximum electric field in β-Ga2O3 Schottky barrier diodes</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">We investigate the intrinsic reverse leakage mechanisms in Ni-based Schottky barrier diodes (SBDs) fabricated on a ( 2 ¯01) single crystal β-Ga2O3 substrate, where a uniform bulk reverse leakage current has been designed and confirmed. The temperature-dependent reverse leakage characteristics are analyzed by a numerical reverse leakage model, which includes both the image-force lowering and doping effects. We found that the reverse leakage current is near-ideal and dominated by Schottky barrier tunneling...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4945267">
+    <div class = "title">Temperature-dependent capacitance–voltage and current–voltage characteristics of Pt/Ga2O3 (001) Schottky barrier diodes fabricated on <i>n</i>––Ga2O3 drift layers grown by halide vapor phase epitaxy</div>
+    <div><span class = "journal">Applied Physics Letters</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">We investigated the temperature-dependent electrical properties of Pt/Ga2O3 Schottky barrier diodes (SBDs) fabricated on n–-Ga2O3 drift layers grown on single-crystal n+-Ga2O3 (001) substrates by halide vapor phase epitaxy. In an operating temperature range from 21 °C to 200 °C, the Pt/Ga2O3 (001) Schottky contact exhibited a zero-bias barrier height of 1.09–1.15 eV with a constant near-unity ideality factor. The current–voltage characteristics of the SBDs were well-modeled by thermionic...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/ted.2018.2838439">
+    <div class = "title">Vertical Geometry, 2-A Forward Current Ga<sub>2</sub>O<sub>3</sub> Schottky Rectifiers on Bulk Ga<sub>2</sub>O<sub>3</sub> Substrates</div>
+    <div><span class = "journal">IEEE Transactions on Electron Devices</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">Large area (up to 0.2 cm2) Ga2O3 rectifiers without edge termination were fabricated on a Si-doped n-Ga2O3 drift layer grown by halide vapor phase epitaxy on a Sn-doped n+Ga2O3 (001) substrate. A forward current of 2.2 A was achieved in single-sweep voltage mode, a record for Ga2O3 rectifiers. The on-state resistance was $0.26~\Omega ~ \cdot$ cm2 for these largest diodes, decreasing to $5.9\times 10^{-4} \Omega \,\, \cdot$ cm2 for $40\times 40\,\,\mu \text{m}^{2}$ devices. The temperature dependence (25...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1116/1.4980042">
+    <div class = "title">Electrical behavior of <i>β</i>-Ga2O3 Schottky diodes with different Schottky metals</div>
+    <div><span class = "journal">Journal of Vacuum Science &amp; Technology B, Nanotechnology and Microelectronics: Materials, Processing, Measurement, and Phenomena</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">Schottky diodes based on ( 2 ¯ 01) β-Ga2O3 substrates and (010) β-Ga2O3 homoepitaxial layers were formed using five different Schottky metals: W, Cu, Ni, Ir, and Pt. Based on a comparison of the effects of different wet chemical surface treatments on the Ga2O3 Schottky diodes, it was established that a treatment with an organic solvent, cleaning with HCl and H2O2, and rinsing with deionized water following each step yielded the best results. Schottky barrier heights calculated from current–voltage...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/2.0291701jss">
+    <div class = "title">Temperature-Dependent Characteristics of Ni/Au and Pt/Au Schottky Diodes on β-Ga<sub>2</sub>O<sub>3</sub></div>
+    <div><span class = "journal">ECS Journal of Solid State Science and Technology</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">Schottky diodes were formed on bulk or epitaxial β-Ga2O3 using Ni/Au or Pt/Au and the electrical characteristics measured as a function of temperature in the range 25–200°C. The barrier heights were 1.07 eV (Ni/Au) and 1.04 eV (Pt/Au) at 25°C. The barrier heights increased with temperature, while the on-state resistances (RON) decreased over the same range. The temperature coefficient of reverse breakdown voltage (VB), β, was −4 mV/K for Ni/Au and −0.1 mV/K for Pt/Au. The figure-of-merit...</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

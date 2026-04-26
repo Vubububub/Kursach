@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Conduction mechanism and UV/visible photodetection properties of p-Si/n-SiC heterostructure</div>
+
+                <div>Optical and Quantum Electronics, 2023</div>
+
+                <div class = "abstract"></div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.1007/s11082-023-04571-9">10.1007/s11082-023-04571-9 <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" style = "display:none">
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1007/s10812-022-01352-2">
+    <div class = "title">Structural and Optical Properties of SiC/Si Heterostructures Obtained Using Rapid Vacuum-Thermal Carbidization of Silicon</div>
+    <div><span class = "journal">Journal of Applied Spectroscopy</span>, <span class = "year">2022</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2022.153232">
+    <div class = "title">Two-dimensional Sc2CCl2/SiS2 van der Waals heterostructure with high solar power conversion efficiency</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2022</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jallcom.2022.167699">
+    <div class = "title">Synthesis of N-doped SiC nano-powders with effective microwave absorption and enhanced photoluminescence</div>
+    <div><span class = "journal">Journal of Alloys and Compounds</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2022.154857">
+    <div class = "title">SiC2/BP5: A pentagonal van der Waals heterostructure with tunable optoelectronic and mechanical properties</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2022</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jallcom.2022.167665">
+    <div class = "title">Space-charge-limited current passivation of the self-powered and ultraviolet-to-visible range bilayer p-Si/n-Bi2S3 heterojunction photodetector by Ag coating</div>
+    <div><span class = "journal">Journal of Alloys and Compounds</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.582768">
+    <div class = "title">Feasibility of IR-to-UV detection in SiC/SiO 2 heterostructures</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">We will discuss the advantages of the realization of SiC/SiO<sub>2</sub> quantum structures and their optical absorption properties. Our calculations suggest that it is possible to extend the range of the optical absorption of such structures to build applications that operates from infrared to UV spectrum using a single material and band-structure engineering.</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2024.159440">
+    <div class = "title">Efficient photocatalytic overall water splitting for hydrogen evolution and CO2 reduction with SiCP4 allotrope monolayers</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2024</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1007/s12633-023-02482-8">
+    <div class = "title">Study of Porous Silicon Layer Effect in Optoelectronics Properties of Multi-Crystalline Silicon for Photovoltaic Applications</div>
+    <div><span class = "journal">Silicon</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1007/s11051-023-05734-1">
+    <div class = "title">Investigation of the optical properties and clues to the emission mechanism in silver nanoparticle–coated silicon nanowires</div>
+    <div><span class = "journal">Journal of Nanoparticle Research</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.physb.2022.414495">
+    <div class = "title">The temperature-dependent dielectric properties of the Au/ZnO-PVA/n-Si structure</div>
+    <div><span class = "journal">Physica B: Condensed Matter</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2021.152113">
+    <div class = "title">The performance of a perovskite-silicon tandem photovoltaic device coupled with the infrared-enhanced response titanium subnitride film</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2022</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1039/c9tc04116h">
+    <div class = "title">Enhanced piezoresistive performance of 3C-SiC nanowires by coupling with ultraviolet illumination</div>
+    <div><span class = "journal">Journal of Materials Chemistry C</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">We reported an effective strategy for enhancing the piezoresistive behaviors of SiC nanowires by coupling with UV illumination.</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.ijleo.2023.171473">
+    <div class = "title">An ab-initio investigation of structural, electronic, optical and elastic properties of novel double Vacancy-ordered perovskite Cs2MoI6 for photocatalytic application</div>
+    <div><span class = "journal">Optik</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1126/science.1166079">
+    <div class = "title">Transforming Light</div>
+    <div><span class = "journal">Science</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Near-UV-to-Near-IR Hyperbolic Photonic Dispersion in Epitaxial (Hf,Zr)N/ScN Metal/Dielectric Superlattices,</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.ijheatmasstransfer.2023.124737">
+    <div class = "title">Epsilon-near-zero thin film enhanced nonreciprocal thermal radiation in Weyl semimetal-based heterostructures</div>
+    <div><span class = "journal">International Journal of Heat and Mass Transfer</span>, <span class = "year">2024</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1007/s11664-026-12702-7">
+    <div class = "title">Composition-Driven Band Engineering and Temperature Effects in pSi/nCdmZn1−mS Heterojunctions</div>
+    <div><span class = "journal">Journal of Electronic Materials</span>, <span class = "year">2026</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.2345471">
+    <div class = "title">Characterization of oxide films on 4H-SiC epitaxial (0001¯) faces by high-energy-resolution photoemission spectroscopy: Comparison between wet and dry oxidation</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">Abstract</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1007/s10854-023-11445-z">
+    <div class = "title">Fabrication and study of Si/Sb2Se3 heterojunction-based visible light photodetectors</div>
+    <div><span class = "journal">Journal of Materials Science: Materials in Electronics</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.materresbull.2023.112172">
+    <div class = "title">Mesoporous CdTe supported SiO2-TiO2 nanocomposite: Structural, optical, and photocatalytic applications</div>
+    <div><span class = "journal">Materials Research Bulletin</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.physb.2023.414900">
+    <div class = "title">On analysis of optical and impedance spectroscopy properties of nickel tetraphenyl porphyrin nanostructure /ITO Schottky diodes</div>
+    <div><span class = "journal">Physica B: Condensed Matter</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1002/pssb.2221910117">
+    <div class = "title">About a Conjunction between Electrical and Optical Phenomena in p‐Type Heavily Doped Silicon at Room Temperature</div>
+    <div><span class = "journal">physica status solidi (b)</span>, <span class = "year">1995</span></div>
+    <div class = "abstract">en</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1039/c8cp03508c">
+    <div class = "title">First-principles calculations of the electronic properties of SiC-based bilayer and trilayer heterostructures</div>
+    <div><span class = "journal">Physical Chemistry Chemical Physics</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">The tunable Schottky barrier heights and optical absorption efficiency in van der Waals SiC-based heterostructures are investigated.</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4879807">
+    <div class = "title">Optical bandgap of ultra-thin amorphous silicon films deposited on crystalline silicon by PECVD</div>
+    <div><span class = "journal">AIP Advances</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">Abstract</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1007/s12633-023-02311-y">
+    <div class = "title">Photothermal Excitation Process in Semiconductor Materials under the Effect Moisture Diffusivity</div>
+    <div><span class = "journal">Silicon</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1002/1527-2648(200006)2:6<386::aid-adem386>3.0.co;2-c">
+    <div class = "title">The Nature of Micropipes in 6H-SiC Single Crystals</div>
+    <div><span class = "journal">Advanced Engineering Materials</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">No abstracts</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mtchem.2022.101309">
+    <div class = "title">Discovery of a novel visible-light-active photodetector based on bismuth ferrite: constructing and optimizing the Cr-doped-BiFeO3/NiO thin film heterostructure</div>
+    <div><span class = "journal">Materials Today Chemistry</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1021/acsanm.9b00860">
+    <div class = "title">Solution Processed Highly Responsive UV Photodetectors from Carbon Nanodot/Silicon Heterojunctions</div>
+    <div><span class = "journal">ACS Applied Nano Materials</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Carbon nanostructures technology has recently emerged as a key enabler for next-generation optoelectronic devices working in the deep UV region due to their excitonic absorption. Here, we report th...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1080/24701556.2020.1793358">
+    <div class = "title">Effect of surface bond and quantum confinement effect on photoluminescence properties of SiC nanowires in different solvents</div>
+    <div><span class = "journal">Inorganic and Nano-Metal Chemistry</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Two kinds of SiC nanowires exhibiting different structures were fabricated by carbothermal reduction method and subsequent wet chemical etching. Strong and tunable ultraviolet to green emission pea...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.snb.2022.132497">
+    <div class = "title">SO2 sensing mechanism of nanostructured SiC-SiOxC core shell: An operando DRIFT investigation</div>
+    <div><span class = "journal">Sensors and Actuators B: Chemical</span>, <span class = "year">2022</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1007/s10825-023-02029-5">
+    <div class = "title">Investigating the photovoltaic performance for Si-doped zigzag graphene nanoribbons using a DFT framework</div>
+    <div><span class = "journal">Journal of Computational Electronics</span>, <span class = "year">2023</span></div>
+    <div class = "abstract"></div>
+</a>
+<a class = "article" target = "blank" href = "/10.1557/jmr.2014.52">
+    <div class = "title">Piezoresistance in silicon and its nanostructures</div>
+    <div><span class = "journal">Journal of Materials Research</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">Abstract</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.molstruc.2022.132946">
+    <div class = "title">Tuning photophysical properties of PFO conjugated polymer for enhancing polymer light emitting diode performance via addition of SiO2/TiO2 nanocomposite</div>
+    <div><span class = "journal">Journal of Molecular Structure</span>, <span class = "year">2022</span></div>
+    <div class = "abstract"></div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

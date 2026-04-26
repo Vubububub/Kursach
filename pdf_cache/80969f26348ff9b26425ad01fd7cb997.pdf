@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Effect of Enhanced Hole Transport on the Performance of Ni/Y<sub>2</sub>O<sub>3</sub>/n-4H-SiC Epilayer Radiation Detectors</div>
+
+                <div>IEEE Transactions on Nuclear Science, 2023</div>
+
+                <div class = "abstract">A significant enhancement in the electrical and charge transport properties has been achieved in self-biased Ni/Y2O3/n-4H-SiC (NiYOSiC) epitaxial layer-based metal–oxide–semiconductor (MOS) radiation detectors compared to conventional Schottky barrier detectors (SBDs). Y2O3 epitaxial layers with thickness ranging from 10 to 120 nm have been deposited on the n-type 4H-SiC epitaxial layer using pulsed laser deposition (PLD) followed by the deposition of Ni gate. The MOS detectors showed excellent...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.1109/TNS.2023.3306276">10.1109/TNS.2023.3306276 <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" style = "display:none">
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1063/5.0021403">
+    <div class = "title">Radiation detection using fully depleted 50 <i>μ</i>m thick Ni/n-4H-SiC epitaxial layer Schottky diodes with ultra-low concentration of Z1/2 and EH6/7 deep defects</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Recent advances in the development of thick 4H-SiC epitaxial layers for the fabrication of surface barrier radiation detectors have been paving the way for their use in highly penetrating radiation detection. Challenges still exist to achieve full depletion all the way to the epilayer width, while maintaining a low leakage current at high reverse bias conditions. We report the fabrication of high-resolution and low leakage current Schottky barrier alpha particle detectors with a large active area of 11 mm2...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/5.0049218">
+    <div class = "title">Defect characterization and charge transport measurements in high-resolution Ni/n-4H-SiC Schottky barrier radiation detectors fabricated on 250 <i>μ</i>m epitaxial layers</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">Advances in the growth processes of 4H-SiC epitaxial layers have led to the continued expansion of epilayer thickness, allowing for the detection of more penetrative radioactive particles. We report the fabrication and characterization of high-resolution Schottky barrier radiation detectors on 250 μm thick n-type 4H-SiC epitaxial layers, the highest reported thickness to date. Several 8 × 8 mm2 detectors were fabricated from a diced 100 mm diameter 4H-SiC epitaxial wafer grown on a conductive 4H-SiC...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.3701522">
+    <div class = "title">Design, Fabrication, Characterization, and Evaluation of X-ray Detectors Based on n-type 4H-SiC Epitaxial Layer</div>
+    <div><span class = "journal">ECS Transactions</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">Progress of high resolution radiation detectors requires the fabrication of radiation detectors that are capable of reliable, long term non-degrading operation at elevated temperatures under high doses of ionizing radiation. One of the semiconductor materials upon which such detectors can be based on is silicon carbide (SiC). The substantial advances in the development of SiC technology over the last 25 years have made it possible to develop almost all the basic types of semiconductor devices including...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0168-9002(03)01868-0">
+    <div class = "title">Investigation of Ni/4H-SiC diodes as radiation detectors with low doped n-type 4H-SiC epilayers</div>
+    <div><span class = "journal">Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">The development of SiC minimum ionising particle (MIP) detectors imposes severe constrains in the electronic quality and the thickness of the material due to the relatively high value of the energy required to produce an electron–hole pair in this material by MIP against the value for Si. In this work, particle detectors were made using semiconductor epitaxial undoped n-type 4H-SiC as the detection medium. The thickness of the epilayer is on the order of 40 μm and the detectors are realised by the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.2063055">
+    <div class = "title">Investigation of low leakage current radiation detectors on n-type 4H-SiC epitaxial layers</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">The surface leakage current of high-resolution 4H-SiC epitaxial layer Schottky barrier detectors has been improved significantly after surface passivations of 4H-SiC epitaxial layers. Thin (nanometer range) layers of silicon dioxide (SiO<sub>2</sub>) and silicon nitride (Si<sub>3</sub>N<sub>4</sub>) were deposited on 4H-SiC epitaxial layers using plasma enhanced chemical vapor deposition (PECVD) on 20 m thick n-type 4H-SiC epitaxial layers followed by the fabrication of large area (~12 mm<sup>2</sup>)...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/nssmic.2013.6829844">
+    <div class = "title">An overview of application of 4H-SiC n-type epitaxial Schottky barrier detector for high resolution nuclear detection</div>
+    <div><span class = "journal">2013 IEEE Nuclear Science Symposium and Medical Imaging Conference (2013 NSS/MIC)</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">Availability of high-quality bulk and epitaxial 4H-SiC has revived the feasibility of fabrication of nuclear radiation detectors which are compact, operable at room or elevated temperature, physically rugged, and radiation hard. SiC detectors have been demonstrated as excellent alpha particle detectors and hence are being considered as compact neutron detectors when coupled with neutron-alpha conversion layers. Our group at University of South Carolina has successfully demonstrated the fabrication of large...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/nssmic.2015.7582285">
+    <div class = "title">Investigation of 12 μm 4H-SiC epilayers for radiation detection and noise analysis of front-end readout electronics</div>
+    <div><span class = "journal">2015 IEEE Nuclear Science Symposium and Medical Imaging Conference (NSS/MIC)</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">Schottky barrier radiation detectors were fabricated on 12 μm n-type 4H-SiC epitaxial layers grown on a 4° off-axis highly doped 4H-SiC substrate (0001). Schottky barrier junction properties were characterized through current-voltage (I-V) and capacitance-voltage (C-V) measurements. A diode ideality factor of 1.29 and Schottky barrier height of 1.10 eV were determined from the forward I-V characteristics using a thermionic emission model. A built-in potential of 1.91 V and effective carrier concentration...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.3390/mi11030254">
+    <div class = "title">Advances in High-Resolution Radiation Detection Using 4H-SiC Epitaxial Layer Devices</div>
+    <div><span class = "journal">Micromachines</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">Advances towards achieving the goal of miniature 4H-SiC based radiation detectors for harsh environment application have been studied extensively and reviewed in this article. The miniaturized devices were developed at the University of South Carolina (UofSC) on 8 × 8 mm 4H-SiC epitaxial layer wafers with an active area of ≈11 mm2. The thicknesses of the actual epitaxial layers were either 20 or 50 µm. The article reviews the investigation of defect levels in 4H-SiC epilayers and radiation detection...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/drc.1997.612496">
+    <div class = "title">An advanced SiC nuclear radiation detector</div>
+    <div><span class = "journal">1997 55th Annual Device Research Conference Digest</span>, <span class = "year"></span></div>
+    <div class = "abstract">This paper reports low noise, high charge collection efficiency, resolution, room temperature, self-biased operation of 3-8 /spl mu/m thick, epitaxially grown, SiC Schottky and pn junction diode detectors fabricated on n+ 4H-SiC substrates. These devices are also shown, for the first time, to have a linear gamma ray response. The thin active region used not only eliminates the problems with material purity, but also allows the device to be tailored for specific applications. For instance, the gamma ray...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.2027142">
+    <div class = "title">Fabrication of high resolution n-type 4H-SiC epitaxial layer alpha particle detectors, defect characterization and electronic noise analysis</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">In the present work high-resolution alpha particle detectors have been fabricated on high quality 20 &mu;m thick n-type 4H-SiC epitaxial layers. Schottky barrier detectors have been fabricated by depositing 10 nm thick nickel contacts on the Si face of the epilayers. The detectors were characterized using current-voltage (I-V), capacitance-voltage (CV), alpha spectroscopic measurements, and deep level transient spectroscopy (DLTS). I-V measurements revealed a barrier height of ~1.6 eV, diode ideality...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.nima.2013.06.076">
+    <div class = "title">High resolution alpha particle detection using 4H–SiC epitaxial layers: Fabrication, characterization, and noise analysis</div>
+    <div><span class = "journal">Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">In this article we report the fabrication and characterization of large area, room-temperature operable and very high resolution Schottky barrier detectors for alpha particles using 20 μm thick n-type 4H–SiC epitaxial layers. Schottky barriers were fabricated by depositing circular nickel contacts of ~11 mm2 area on the 4H–SiC epitaxial layers. Room temperature current–voltage measurements revealed very high Schottky barrier height of 1.6 eV and extremely low leakage current of 3.5 pA at an...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.3390/s17102334">
+    <div class = "title">The Fabrication and Characterization of Ni/4H-SiC Schottky Diode Radiation Detectors with a Sensitive Area of up to 4 cm2</div>
+    <div><span class = "journal">Sensors</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">Silicon carbide (SiC) detectors of an Ni/4H-SiC Schottky diode structure and with sensitive areas of 1–4 cm2 were fabricated using high-quality lightly doped epitaxial 4H-SiC material, and were tested in the detection of alpha particles and pulsed X-rays/UV-light. A linear energy response to alpha particles ranging from 5.157 to 5.805 MeV was obtained. The detectors were proved to have a low dark current, a good energy resolution, and a high neutron/gamma discrimination for pulsed radiation, showing the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.946026">
+    <div class = "title">Assessment of 4H-SiC epitaxial layers and high resistivity bulk crystals for radiation detectors</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">We present results of structural, electrical, and defect characterization of 4H-SiC epitaxial layers and bulk crystals and show performance of the radiation detectors fabricated from these materials. The crystal quality was evaluated by x-ray diffraction (XRD) rocking curve measurements, electron beam induced current (EBIC) imaging, and defect delineating etching in conjunction with optical microscopy and scanning electron microscopy (SEM). Studies of the electrically active intrinsic defects and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/nssmic.2012.6551961">
+    <div class = "title">High-resolution x- and γ-ray detection using 4H-SiC n-type epitaxial layer</div>
+    <div><span class = "journal">2012 IEEE Nuclear Science Symposium and Medical Imaging Conference Record (NSS/MIC)</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">Schottky barrier diode (SBD) radiation detectors on n-type 4H-SiC epitaxial layer have been fabricated and evaluated for low energy x- and γ-rays detection. The detectors were highly sensitive to soft x-rays in the 50 eV to few keV range and showed 2.1% resolution in detecting low energy y-rays of 59.6 keV from 241Am x/γ ray source. The detector's response to soft x-rays was significantly higher than that of commercial off-the-shelf (COTS) SiC UV photodiode. The devices have been characterized by...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4999899">
+    <div class = "title">Effects of biased irradiation on charge trapping in HfO2 dielectric thin films</div>
+    <div><span class = "journal">AIP Conference Proceedings</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">This paper reports the low-dose-rate radiation response of Al-HfO2/SiO2–Si MOS devices, in which the gate dielectric was formed by atomic layer deposition (ALD) with 5-nm equivalent oxide thickness. The degradation of the devices was characterized by a pulse capacitance-voltage (CV) and on-site radiation response technique under continuous gamma (γ) ray exposure at a relatively low dose rate of 0.116 rad (HfO2)/s. Compared with conventional CV measurements, the proposed measurements extract significant...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4883317">
+    <div class = "title">Effect of Z1/2, EH5, and Ci1 deep defects on the performance of n-type 4H-SiC epitaxial layers Schottky detectors: Alpha spectroscopy and deep level transient spectroscopy studies</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">Spectroscopic performance of Schottky barrier alpha particle detectors fabricated on 50 μm thick n-type 4H-SiC epitaxial layers containing Z1/2, EH5, and Ci1 deep levels were investigated. The device performance was evaluated on the basis of junction current/capacitance characterization and alpha pulse-height spectroscopy. Capacitance mode deep level transient spectroscopy revealed the presence of the above-mentioned deep levels along with two shallow level defects related to titanium impurities (Ti(h)...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.nima.2012.11.015">
+    <div class = "title">Schottky barrier detectors on 4H-SiC n-type epitaxial layer for alpha particles</div>
+    <div><span class = "journal">Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment</span>, <span class = "year">2013</span></div>
+    <div class = "abstract">Abstract Schottky barrier detectors have been fabricated on 50 μm n-type 4H-SiC epitaxial layers grown on 360 μm SiC substrates by depositing ∼10 nm nickel contact. Current–voltage ( I – V ) and capacitance–voltage ( C – V ) measurements were carried out to investigate the Schottky barrier properties. The detectors were evaluated for alpha particle detection using a 241 Am alpha source. An energy resolution of ∼2.7% was obtained with a reverse bias of 100 V for 5.48 MeV alpha particles....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.nima.2021.165166">
+    <div class = "title">Improved performance of SiC radiation detector based on metal–insulator–semiconductor structures</div>
+    <div><span class = "journal">Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">SiC is a typical wide bandgap semiconductor that has demonstrated potential applications in radiation detection and imaging, but its performance must be improved from both a material quality and device design standpoint. In this study, based on a theoretical analysis, we found that it is possible to improve the performance of SiC radiation detectors by changing the device structure from a metal/semiconductor to a metal/insulator/semiconductor design and fabricate and evaluate corresponding devices with α...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.nima.2003.08.094">
+    <div class = "title">Radiation tolerance of epitaxial silicon carbide detectors for electrons and γ-rays</div>
+    <div><span class = "journal">Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">Particles detectors were made using semiconductor epitaxial 4H-SiC as the detection medium. The investigated detectors are formed by Schottky contact (Au) on the epitaxial layer and an ohmic contact on the backside of 4H-SiC substrates with different micropipe densities from CREE. For radiation hardness studies, the detectors have been irradiated with electrons (8.2 MeV) and γ-rays (60Co source) at fluences and doses ranging from 0 to 9.48×1014 e/cm2 and 40 Mrad, respectively. We present experimental...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.diamond.2023.110072">
+    <div class = "title">4H-SiC Schottky barrier diodes as radiation detectors: A role of Schottky contact area</div>
+    <div><span class = "journal">Diamond and Related Materials</span>, <span class = "year">2023</span></div>
+    <div class = "abstract">Large-area SiC Schottky barrier diodes can significantly improve the sensitivity in radiation detection due to the increased interacting SiC volume. In this work, we tested a large SiC detector with an area of 1 × 1 cm2. Extensive electrical characterization was performed at temperatures ranging from 150 K to 390 K, demonstrating the impact of barrier inhomogeneities on the electrical performance of the diode. Forward current-voltage (I-V) measurements of the diodes revealed two distinct regions caused by...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.2239079">
+    <div class = "title">Thermal neutron detectors based on hexagonal boron nitride epilayers</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Solid-state neutron detectors with high performances are urgently sought after for the detection of fissile materials. Until now, direct-conversion neutron detectors based on semiconductors with a measureable efficiency have not been realized. We have successfully synthesized hexagonal boron nitride ( h -BN) epilayers with varying thicknesses (0.3 μm – 50 μm) by metal organic chemical vapor deposition (MOCVD) on sapphire substrates. In this paper, we present the detailed characterization of thermal...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/5.0006227">
+    <div class = "title">Charge transport properties in CdZnTeSe semiconductor room-temperature <i>γ</i>-ray detectors</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">CdxZn1−xTeySe1−y (CZTS) has emerged as a next-generation compound semiconductor for high energy gamma-ray detection. In the present study, we report for the first time the hole transport property measurements in CZTS based gamma-ray detectors in the planar configuration. Current–voltage measurements revealed a bulk resistivity of ∼5 × 108 Ω cm and the fabricated detectors produced well-resolved 5486 keV alpha particle peaks, for both electrons and holes drifting alike, when pulse-height spectra...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.3390/cryst11010010">
+    <div class = "title">Response of 4H-SiC Detectors to Ionizing Particles</div>
+    <div><span class = "journal">Crystals</span>, <span class = "year">2020</span></div>
+    <div class = "abstract">We report the response of newly designed 4H-SiC Schottky barrier diode (SBD) detector prototype to alpha and gamma radiation. We studied detectors of three different active area sizes (1 × 1, 2 × 2 and 3 × 3 mm2), while all detectors had the same 4H-SiC epi-layer thickness of approximately µm, sufficient to stop alpha particles up to 6.8 MeV, which have been used in this study. The detector response to the various alpha emitters in the 3.27 MeV to 8.79 MeV energy range clearly demonstrates the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/asdam.2014.6998647">
+    <div class = "title">Analysis of detection properties of particle detectors based on 4H-SiC high quality epitaxial layer</div>
+    <div><span class = "journal">The Tenth International Conference on Advanced Semiconductor Devices and Microsystems</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">The 4H polytype SiC is a promising material for radiation-resistant sensors of ionizing particles. In this work we focused on the analysis of active region thickness of detectors based on 4H-SiC. The detectors investigated are fabricated from a 105 μm epitaxial layer grown on 350 μm 4H-SiC substrate. The circular Schottky contacts with diameter of 1.4 mm using an Au/Ni double layer were evaporated onto both sides of the detector material. The capacitance-voltage measurements allowed us to estimate free...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0168-9002(02)01558-9">
+    <div class = "title">Radiation tolerance of epitaxial silicon carbide detectors for electrons, protons and gamma-rays</div>
+    <div><span class = "journal">Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">Particle detectors were made using semiconductor epitaxial 4H–SiC as the detection medium. The investigated detectors are formed by Schottky contact (Au) on the epitaxial layer and an ohmic contact on the back side of 4H–SiC substrates with different micropipe densities from CREE. For radiation hardness studies, the detectors have been irradiated with protons (24GeV/c) at a fluence of about 1014cm−2 and with electrons (8.2MeV) and gamma-rays (60Co source) at doses ranging from 0 to 40Mrad. We present...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.1906294">
+    <div class = "title">Electrical and optical characterization of 4H-SiC diodes for particle detection</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">The electronic and optical properties of several (medium to high quality) 4H-SiC epitaxial sensors for particle detection have been studied. The samples are n-doped Schottky diodes with different nitrogen concentrations (6×1013cm−3–5×1015cm−3) and thicknesses (20–40μm). A full electrical and optical characterization has been performed by capacitance versus voltage measurements and near-band-edge low-temperature photoluminescence. The effective doping along the epilayer and the depletion width...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/23.785738">
+    <div class = "title">Development of high-resolution CdTe radiation detectors in a new M-/spl pi/-n design</div>
+    <div><span class = "journal">IEEE Transactions on Nuclear Science</span>, <span class = "year">1999</span></div>
+    <div class = "abstract">The authors have developed M-/spl pi/-n (metal high-resistivity p-type crystal, highly n-type epilayer) CdTe detectors in a new design that are suitable for X-ray and /spl gamma/-ray spectrometry in the range of a few tens to several hundred kilo-electron volts. Using high-resistivity single crystal CdTe substrates (resistivity /spl sim/10/sup 9/ /spl Omega//spl middot/cm), an iodine-doped n-CdTe layer was grown homoepitaxially on one face of each wafer at a low substrate temperature of 150/spl deg/C using...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/nssmic.2017.8532837">
+    <div class = "title">Deep Level Transient Spectroscopy and Pulse Height Measurements on High Resolution n-Type 4H-SiC Epitaxial Schottky Barrier Radiation Detectors</div>
+    <div><span class = "journal">2017 IEEE Nuclear Science Symposium and Medical Imaging Conference (NSS/MIC)</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">High resolution 20 μm n-type 4H-SiC epitaxial layer Schottky barrier radiation detectors were fabricated by depositing nickel (Ni) contacts using DC sputtering for both front- and backside. Current-Voltage (I-V) measurements at 300 K showed barrier height and diode ideality factor of ∼1.14 eV and 1.19 respectively. The leakage current at -170V reverse bias was $\sim 1.0 \times 10^{-9}$ A. Capacitance-Voltage (C-v) measurements revealed a doping concentration of $2.9 \times 10^{14} cm^{-3}$. Deep level...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.diamond.2017.07.010">
+    <div class = "title">Alpha radiation induced space charge stability effects in semi-insulating silicon carbide semiconductors compared to diamond</div>
+    <div><span class = "journal">Diamond and Related Materials</span>, <span class = "year">2017</span></div>
+    <div class = "abstract">Although the use of semi-insulating silicon carbide material for radiation detection purposes has been previously demonstrated, its use in practical applications has been inhibited by space charge stability issues caused by defect concentrations within the material, the so called polarisation effect, by which the count rate and resultant spectrum changes with irradiation time. This is a result of the charge carriers generated during irradiation filling deep level defects within the material, causing space...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.3390/ma12172741">
+    <div class = "title">Radiation Response of Negative Gate Biased SiC MOSFETs</div>
+    <div><span class = "journal">Materials</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Silicon carbide (SiC) metal-oxide-semiconductor field effect transistors (MOSFETs) are expected as power electronic devices for high radiative conditions, including nuclear plants and space. Radiation response of commercial-grade prototype SiC MOSFETs with applying the gate bias is of interest, in terms of installation of the device in robots or sensors working under such radioactive circumstances. Due to gamma-rays irradiation, the threshold voltages (Vth) of samples with un- and negative-biased up to...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/led.2020.3048949">
+    <div class = "title">Behavioral Contrast of Electron and Hole Transport in High-Resolution Diamond Detectors: A Biparametric Correlation Study</div>
+    <div><span class = "journal">IEEE Electron Device Letters</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">In this letter we investigate for the first time the behavioral differences of transport properties of electrons and holes observed in high-resolution radiation detectors fabricated on high-purity single crystalline diamond using biparametric (BP) correlation studies. The chemical vapor deposition (CVD) grown 500 μm thick diamonds exhibited an excellent energy resolution of 0.5% for 5486 keV alpha particles for both electron and hole transport in a vertical electrode geometry. Interestingly, the behavior...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.615-617.857">
+    <div class = "title">Diffusion Length in n-Doped 4H Silicon Carbide Crystals Detected by Alpha Particle Probe</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">The achievement of nuclear detectors in Silicon Carbide imposes severe constraints on the electronic quality and thickness of the material due to the relatively high value of the energy required to generate an electron-hole pair (7.8 eV) in this material compared to the value for Si (3.6 eV). In this work, 4H-SiC charged particle detectors were realised using epitaxial layers of n-type doping as active region. The thickness of the epilayer is always below 80 μm with a net doping concentration in the range...</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

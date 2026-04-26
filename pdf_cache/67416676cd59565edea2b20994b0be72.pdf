@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Studies on Structural and Electrical Characterization of Nitrogen Doped SiC Thin Films</div>
+
+                <div>2024 International Conference on Smart Systems for applications in Electrical Sciences (ICSSES), 2024</div>
+
+                <div class = "abstract">The studies on structural and electrical characterization of a nitrogen doped SiC (n-SiC) film is prepared at $350^{\circ} \mathrm{C}$ using RF Magnetron sputtering method (PVD) on silicon (100) substrate is discussed in this paper. Nitrogen is used as dopant. The structural and electrical characterization of n-SiC thin films are studied using X-Ray diffraction, Field Emission Scanning Electron Microscope, Energy Dispersive X ray spectroscopy and four probe method. The XRD patterns of n-SiC thin film...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.1109/ICSSES62373.2024.10561276">10.1109/ICSSES62373.2024.10561276 <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" style = "display:none">
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1088/2053-1591/1/1/015902">
+    <div class = "title">The effect of nitrogen doping on the elastic modulus and hardness of 3C-SiC thin films deposited using methyltrichlorosilane</div>
+    <div><span class = "journal">Materials Research Express</span>, <span class = "year">2014</span></div>
+    <div class = "abstract">For thin-film sensor applications, the mechanical properties, such as the hardness and elastic modulus, of the sensing material are important in addition to its electrical properties. The mechanical properties of the material need to be known at the design stage of the sensor because these properties are influenced by doping. The effect of in situ nitrogen doping on the mechanical properties of 3C-SiC (111) thin films are presented in this paper. These films are deposited at a pressure of 2.5 mbar and a...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.645-648.391">
+    <div class = "title">Characteristics of Porous 3C-SiC Thin Films Formed with Nitrogen Doping Concentrations</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">This paper describes the characteristics of porous 3C-SiC with in-situ N-doping concentrations. Polycrystalline (poly) 3C-SiC thin films were deposited on p-type Si (100) substrates by APCVD using hexamethyildisilane (HMDS: Si2(CH3)6). The porous 3C-SiC (pSiC) was achieved by anodized with 380 nm UV-LED. The characteristics of the N2 doped pSiC were evaluated using X-ray diffraction (XRD), Fourier transform infrared spectroscopy (FTIR), scanning electron microscopy (SEM) and photo luminescence (PL)....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.mssp.2013.12.017">
+    <div class = "title">Microstructure and electrical properties of nitrogen doped 3C–SiC thin films deposited using methyltrichlorosilane</div>
+    <div><span class = "journal">Materials Science in Semiconductor Processing</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">The growth, microstructure and electrical properties of in-situ nitrogen doped 3C–SiC (111) thin films for sensor applications are presented in this paper. These thin films are deposited at a pressure of 2.5 mbar and temperature of 1040 °C on thermally oxidized Si (100) substrates from methyltrichlorosilane (MTS) precursor using a hot wall vertical low pressure chemical vapor deposition (LPCVD) reactor. Ammonia (NH3) is used as the nitrogen doping gas. The sensor response depends on chemical...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.sna.2006.12.024">
+    <div class = "title">A study of electrical properties and microstructure of nitrogen-doped poly-SiC films deposited by LPCVD</div>
+    <div><span class = "journal">Sensors and Actuators A: Physical</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">The electrical properties and microstructure of polycrystalline 3C-SiC (poly-SiC) films were studied for different nitrogen doping concentrations. Nitrogen-doped poly-SiC films were deposited by LPCVD (low pressure chemical vapor deposition) at 900 °C and 2 Torr using 100% SiH2Cl2 (35 sccm) and 5% C2H2 (180 sccm) as the Si and C precursor gases, and 1% NH3 (20–100 sccm) as the dopant source gas. The resistivity of the poly-SiC films at 30 °C decreased from 1.466 Ω cm to 0.036 Ω cm as the flow of NH3...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1007/s12034-019-1937-7">
+    <div class = "title">Effect of nitrogen flow rate on the mechanical properties of CVD-deposited SiCN thin films</div>
+    <div><span class = "journal">Bulletin of Materials Science</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">Silicon carbonitride (SiCN) thin films were deposited on p-Si (100) substrates with different $$\hbox {N}_{2}$$ flow rates using SiC and $$\hbox {Si}_{3}\hbox {N}_{4}$$ powder precursors by chemical vapour deposition. To investigate the structural, vibrational and mechanical properties, the SiCN thin films were characterized by atomic force microscopy, Raman spectroscopy, X-ray diffraction (XRD), Fourier transform infrared and nanoindentation techniques. The XRD results reveal nanocrystals embedded with...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0040-6090(97)00328-3">
+    <div class = "title">The crystalline properties of nitrogen doped hydrogenated microcrystalline silicon thin films</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">1997</span></div>
+    <div class = "abstract">The crystalline properties of nitrogen doped hydrogenated microcrystalline silicon thin films deposited by plasma enhanced chemical vapor deposition were studied. Gas phase doping density in the order of 10−2 and 10−1 leads to changes in the crystalline properties of the films. Raman scattering signals indicate that nitrogen doping causes a more significant reduction in crystallite size than does an increase in SiH4 concentration. In addition, the size reduction occurs with a less significant increase...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0040-6090(98)01501-6">
+    <div class = "title">The effect of nitrogen doping on the structure of cluster or microcrystalline silicon embedded in thin SiO2 films</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">1999</span></div>
+    <div class = "abstract">In this study, we investigated the effects of nitrogen doping on the structural properties of cluster or microcrystalline Si embedded in thin SiO2 films. Thermal annealing of Si-rich a-SiOx or a-SiOxNy (x > y) films prepared by the r.f. co-sputtering method produces Si clusters or microcrystallines in the films. The structure of the embedded Si grains is affected by nitrogen doping that is achieved by using Ar-N2 mixed gas as the sputtering gas. Nitrogen doping decreases the size of the Si grains after the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.physb.2009.09.055">
+    <div class = "title">Analysis of mechanical properties of N2 in situ doped polycrystalline 3C-SiC thin films by chemical vapor deposition using single-precursor hexamethyildisilane</div>
+    <div><span class = "journal">Physica B: Condensed Matter</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">This paper describes the mechanical properties of poly (polycrystalline) 3C-SiC thin films with N2 in situ doping. In this work, in situ doped poly 3C-SiC film was deposited by using the atmospheric pressure chemical vapor deposition (APCVD) method at 1200 °C using single-precursor hexamethyildisilane: Si2(CH3)6 (HMDS) as Si and C precursors, and 0∼100 sccm N2 as the dopant source gas. The mechanical properties of doped poly 3C-SiC thin films were measured by nano-indentation. Young's modulus and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4139/sfj.41.40">
+    <div class = "title">Influence of addition of nitrogen gas on the properties of SiC thin films deposited by magnetron sputtering.</div>
+    <div><span class = "journal">Journal of the Surface Finishing Society of Japan</span>, <span class = "year">1990</span></div>
+    <div class = "abstract">SiC films were deposited by magnetron sputtering using Ar sputtering gases having various volume fractions of N2 gas. The chemical composition, quality and electric properties of the deposited films were investigated with the following results.The hardness of the deposited films decreased linearly with the increase in the amount of N2 gas added, reaching a constant value of HK 1300 at a volume fractions of N2 to Ar of 30∼40%.Deposited films also became celluler in structure with increases in the amount...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.4946704">
+    <div class = "title">Influence of sputtering power on structural, mechanical and photoluminescence properties of nanocrystalline SiC thin films</div>
+    <div><span class = "journal">AIP Conference Proceedings</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">In the present study, SiC thin films were deposited on Si (100) substrate by magnetron sputtering using a 4N purity commercial SiC target in argon atmosphere. The effect of sputtering RF power (140-170W) on structural, mechanical and photoluminescence properties were systematically studied by X-ray diffraction, field emission scanning electron microscopy, Nanoindentation and Spectrophotometer respectively. X-ray diffraction shows polycrystalline 4H-SiC phase with (105) preferred orientation and an...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1038/s41598-018-28704-3">
+    <div class = "title">Effect of Nitrogen Doping and Temperature on Mechanical Durability of Silicon Carbide Thin Films</div>
+    <div><span class = "journal">Scientific Reports</span>, <span class = "year">2018</span></div>
+    <div class = "abstract">Abstract Amorphous silicon carbide (a-SiC) films are promising solution for functional coatings intended for harsh environment due to their superior combination of physical and chemical properties and high temperature stability. However, the structural applications are limited by its brittleness. The possible solution may be an introduction of nitrogen atoms into the SiC structure. The effect of structure and composition on tribo-mechanical properties of magnetron-sputtered a-SiC x N y thin films with...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1742-6596/370/1/012015">
+    <div class = "title">Low temperature deposition of low stress silicon nitride by reactive magnetron sputtering</div>
+    <div><span class = "journal">Journal of Physics: Conference Series</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">Silicon nitride thin film is a well-know kind of material in semiconductor industries. These films are used in important applications such as protective layers; insulators for optical devices, as dielectric material for thin film transistors (TFTs), etc. In this work, silicon nitride thin films were deposited at room temperature through of the reaction of sputtered silicon by argon ions and nitrogen gas with relatively high deposition rates in sputtering reactive processes. We have obtained silicon nitride...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.tsf.2014.11.070">
+    <div class = "title">Effect of the stoichiometry of Si-rich silicon nitride thin films on their photoluminescence and structural properties</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">Si-rich Silicon nitride films were grown on silicon substrates by plasma enhanced chemical vapor deposition. The film stoichiometry was controlled via the variation of NH3/SiH4 ratio from 0.45 up to 1.0. Thermal annealing at 1100 °C for 30 min in the nitrogen flow was applied to form the Si nanocrystals in the films that have been investigated by means of photoluminescence and Raman scattering methods, as well as transmission electron microscopy. Several emission bands have been detected with the peak...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.5100708">
+    <div class = "title">Effect of deposition temperature on microstructure properties of SiC thin films deposited using RF magnetron sputtering</div>
+    <div><span class = "journal">AIP Conference Proceedings</span>, <span class = "year">2019</span></div>
+    <div class = "abstract">This paper presents the microstructure properties of SiC thin films deposited at 300°C and 400°C using RF M agnetron sputtering on silicon wafer substrate. The microstructural properties are investigated for both the samples using X-Ray diffraction (XRD), Fourier transform Infrared spectroscopy (FTIR) and Atomic force microscopy (AFM). The XRD patterns of the SiC thin films show an increase in crystallite size and decrease in strain and dislocation density as deposition temperature increases. An FTIR...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.711.154">
+    <div class = "title">Dose Influence on Physical and Electrical Properties of Nitrogen Implantation in 3C-SiC on Si</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">In this paper, we studied the influence of nitrogen implantation dose on both physical and electrical properties in 3C-SiC grown on Si (100) substrate. Scanning Transmission Electron Microscopy characterizations prove that high dose is responsible for amorphization of the implanted layer and the high defect density after annealing. A high V-shape defect density is still found in the implanted layer after an annealing at 1350°C. By lowering the dose, the layer is less damaged and no amorphization is...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.surfcoat.2011.09.062">
+    <div class = "title">Effect of nitrogen content in amorphous SiCxNyOz thin films deposited by low temperature reactive magnetron co-sputtering technique</div>
+    <div><span class = "journal">Surface and Coatings Technology</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Abstract Amorphous silicon oxycarbonitride (SiC x N y O z ) films have been deposited on Si substrates by low temperature reactive magnetron co-sputtering of silicon and graphite targets in mixed Ar/N 2 atmosphere. Our studies are focused on the influence of nitrogen incorporation on deposition rate, film composition, film structure, chemical bonds, and electrical resistivity of SiC x N y O z films investigated by profilometry, Rutherford Backscattering Spectrometry (RBS), X-ray diffraction (XRD), Raman...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.615-617.327">
+    <div class = "title">Electrical and Mechanical Properties of Post-Annealed SiC&lt;sub&gt;x&lt;/sub&gt;N&lt;sub&gt;y&lt;/sub&gt; Films</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Amorphous SiCxNy films have been deposited on (100) Si substrates by RF magnetron sputtering of a SiC target in a variable nitrogen-argon atmosphere. The as-deposited films were submitted to thermal anneling in a furnace under argon atmosphere at 1000 °C for 1 hour. Composition and structure of unannealed and annealed samples were investigated by RBS and FTIR. To study the electrical characteristics of SiCxNy films, Metal-insulator-semiconductor (MIS) structures were fabricated. Elastic modulus and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1742-6596/100/8/082045">
+    <div class = "title">Structural and optical properties studies of sputtered a-SiCN thin films</div>
+    <div><span class = "journal">Journal of Physics: Conference Series</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Amorphous silicon carbonitride (a-SiCxNy) thin films were deposited by reactive sputtering from SiC target and N2/Ar mixtures. Their structural study was carried out by mean of RBS, FTIR, Raman and electron spin resonance analysis. The optical properties were determined by UV-visible spectroscopy. The fact to introduce different amounts of nitrogen with argon in the gas phase induced structural changes which are visible since 5 % of N2. For more than 30 % of nitrogen in the gas mixture, a N-saturated...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/0960-1317/20/3/035011">
+    <div class = "title">Growth and characterization of nitrogen-doped polycrystalline 3C-SiC thin films for harsh environment MEMS applications</div>
+    <div><span class = "journal">Journal of Micromechanics and Microengineering</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">Polycrystalline 3C-SiC films, in situ doped with nitrogen, are grown by low-pressure chemical vapor deposition (LPCVD) on 100 mm Si (1 0 0) wafers at 800 °C using methylsilane and ammonia precursors. The effects of NH3 and dichlorosilane precursor, as an additional silicon source, on material properties such resistivity, residual stress, strain, strain gradient as well as crystallinity and surface morphology are investigated. By varying these parameters, the electrical and mechanical properties of the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1117/12.408319">
+    <div class = "title">Sputtering deposition and optical properties of SiC x N y films</div>
+    <div><span class = "journal">SPIE Proceedings</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">In this paper, the SiC x N y films were prepared by RF magnetron sputtering with SiC target. The influences of the basic process parameters on the deposition rate and optical properties were studied. The results revealed the formation of a complex network among Si, C and N. The deposition rate decreased with increasing partial pressure of nitrogen. The increase of N 2 flux resulted in the wider optical gap. The greater the sputtering power, the higher the deposition rate and the narrower the optical band...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/0256-307x/25/6/095">
+    <div class = "title">Doped Polycrystalline 3C-SiC Films Deposited by LPCVD for Radio-Frequency MEMS Applications</div>
+    <div><span class = "journal">Chinese Physics Letters</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Polycrystalline 3C-SiC films are deposited on SiO2 coated Si substrates by low pressure chemical vapour deposition (LPCVD) with C3H8 and SiH4 as precursors. Controlled nitrogen doping is performed by adding NH3 during SiC growth to obtain the low resistivity 3C-SiC films. X-ray diffraction (XRD) patterns indicate that the deposited films are highly textured (111) orientation. The surface morphology and roughness are determined by scanning electron microscopy (SEM) and atomic force microscopy (AFM). The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/kem.662.95">
+    <div class = "title">Effect of Nitrogen Content on the Mechanical Properties of Amorphous SiCN Films</div>
+    <div><span class = "journal">Key Engineering Materials</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">Amorphous silicon carbonitride (a-SiC x N y ) thin films were deposited using reactive magnetron sputtering of SiC target in the mixture of Ar and N gasses. The films with nitrogen content from 0 - 40 at.% were sputtered at various N 2 /Ar flow ratios in the range of 0 - 0.48. The as deposited films were additionally annealed in argon at 700 °C and vacuum at 900 °C. Analysis of mechanical properties was performed using the regular nanoindentation and short duration nanoindentation creep test (600...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.tsf.2009.01.045">
+    <div class = "title">Preparation of n-type nanocrystalline 3C-SiC films by hot-wire CVD using N2 as doping gas</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">N-type nanocrystalline 3C-SiC films were prepared by hot-wire chemical vapor deposition from SiH4/CH4/H2 and N2 as a doping gas and the structural and electrical properties were investigated. The gas flow rates of SiH4, CH4 and H2 were 1, 1 and 200 sccm, respectively. As the N2 gas flow rate was increased from 0 to 10 sccm, the conductivity and the activation energy improved from 0.05 to 0.3 S/cm and from 45 to 28 meV, respectively. The Hall Effect measurement proved that the improvement of the electrical...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0257-8972(03)00695-9">
+    <div class = "title">Investigation and characterisation of silicon nitride and silicon carbide thin films</div>
+    <div><span class = "journal">Surface and Coatings Technology</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">Thin films of silicon nitride (Si3N4) and silicon carbide (SiC) have been deposited by radio frequency (r.f.) magnetron sputtering of stoichiometric targets in non-reactive argon and in the case of Si3N4 additionally in reactive nitrogen–argon atmospheres. The influence of the sputtering atmosphere, the substrate temperature and the substrate bias on the composition and on the mechanical and microstructural properties of the thin films was investigated. FTIR and Raman spectroscopy was used to identify...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/0040-6090(90)90245-9">
+    <div class = "title">Preparation and characterization of reactively sputtered SiCxNy films</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">1990</span></div>
+    <div class = "abstract">Abstract Silicon-carbide-nitride films with different atomic contents were prepared by adjusting the nitrogen gas flow rate in a magnetron-sputtering apparatus. The surface electrical resistivity measured by the two-ring probe method increased exponentially with nitrogen content. X-ray photoelectron spectroscopy analysis showed that the electrical resistivity was enhanced by the formation of SiN bonding. Crystalline structure in the X-ray diffraction pattern was observed only for the film produced on...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2011.03.033">
+    <div class = "title">Synthesis and characterization of porous crystalline SiC thin films prepared by radio frequency reactive magnetron sputtering technique</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">Hexagonal SiC thin films have been deposited using radio frequency reactive magnetron sputtering technique by varying the substrate temperature and other deposition conditions. Prior to deposition surface modification of the substrate Si(1 0 0) played an important role in deposition of the hexagonal SiC structure. The effect of substrate temperature during deposition on structure, composition and surface morphology of the SiC films has been analyzed using atomic force microscopy, Fourier transform infrared...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1166/jnn.2008.220">
+    <div class = "title">Very Thin Poly-SiC Films for Micro/Nano Devices</div>
+    <div><span class = "journal">Journal of Nanoscience and Nanotechnology</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">We report characterization of nitrogen-doped, very thin, low-stress polycrystalline silicon carbide (poly-SiC) films suitable for fabricating micro/nano devices. The poly-SiC films are deposited on 100 mm-diameter (100) silicon wafers in a large-scale, hot-wall, horizontal LPCVD furnace using SiH2Cl2 and C2H2 as precursors and NH, as doping gas. The deposition temperature and pressure are fixed at 900 degrees C and 4 Torr, respectively. The deposition rate increases substantially in the first 50 minutes,...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.2956052">
+    <div class = "title">Etching Characteristics and Surface Morphology of Nitrogen-Doped a-SiC Films Prepared by RF Magnetron Sputtering</div>
+    <div><span class = "journal">ECS Transactions</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Amorphous nitrogen-doped silicon carbide (a-SiCxNy) thin films were deposited on Si substrates by RF magnetron sputtering of a SiC target in a N2+Ar atmosphere. The N2/Ar flow ratio was adjusted by varying the N2 flow rate and maintaining constant the Ar flow rate. In order to investigate the influence of N2/Ar flow ratio on composition, bonding structure, morphology and surface roughness of the deposited films, the following techniques were used: Rutherford backscattering spectroscopy (RBS), Raman...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.spmi.2016.03.009">
+    <div class = "title">Effects of nitrogen impurities on the microstructure and electronic properties of P-doped Si nanocrystals emebedded in silicon-rich SiN x films</div>
+    <div><span class = "journal">Superlattices and Microstructures</span>, <span class = "year">2016</span></div>
+    <div class = "abstract">Phosphorus doped Si nanocrystals (SNCs) emebedded in silicon-rich SiNx:H films were prepared using plasma enhanced chemical vapor deposition technique, and the effects of nitrogen incorporation on the microstructure and electronic properties of the thin films have been systematically studied. Transmission electron microscope and Raman observation revealed that nitrogen incorporation prevents the growth of Si nanocrystals, and that their sizes can be adjusted by varying the flow rate of NH3. The reduction...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0169-4332(99)00493-6">
+    <div class = "title">Structural analysis and microstructural observation of SiCxNy films prepared by reactive sputtering of SiC in N2 and Ar</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">In this paper, the amorphous silicon carbonitride (SiCxNy) films were prepared by radio frequency (RF) magnetron reactive sputtering using sintered SiC target. X-ray photoelectron spectroscopy (XPS) and Fourier transform infrared spectrometer (FTIR) were used for structural characterization of the films. The results revealed the formation of complex networks among the three elements (Si, C and N) and the existence of different chemical bonds in the SiCxNy films such as CN, CN CN, SiC and...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1049/el:20060865">
+    <div class = "title">Deposition and properties of polycrystalline
+            <i>β</i>
+            -SiC films using LPCVD with different dopant amount</div>
+    <div><span class = "journal">Electronics Letters</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">The physical and electrical properties of polycrystalline β-SiC were studied according to different nitrogen doping concentration. The crystalline peaks SiC(111), SiC(220), SiC(311) and SiC(222) appeared in XRD analysis of poly-SiC films deposited on Si substrates covered with thermally-grown SiO2. Resistance of nitrogen-doped SiC films decreased with increasing temperature. The size of resistance ratio was much bigger in films with low doping. On the other hand, the linearity of resistance variation was...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.821-823.217">
+    <div class = "title">Effect of Nitrogen Dilution in the Optical Properties of Amorphous SiC Thin Films</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2015</span></div>
+    <div class = "abstract">The effect of the nitrogen dilution on the optical and vibrational properties of amorphous silicon carbide ( a -SiC) and silicon oxycarbide ( a -SiCO) layers have been studied. The films were prepared by radio frequency (rf) reactive magnetron sputtering using an atmosphere mixture of argon (Ar) and nitrogen (N 2 ). The oxygen (O 2 ) was incorporated according to the base pressure used of each deposition process. The optical and vibrational properties of the films were characterized by means of UV/VIS...</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>

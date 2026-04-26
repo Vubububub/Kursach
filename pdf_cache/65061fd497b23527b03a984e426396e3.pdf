@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title translate = "ru:title">Sci-Hub: статья отсутствует в базе. Что делать?</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width">
+    </head>
+    <body>
+
+        <style>
+
+    @import url('/styles/Atkinson.css');
+    @import url('/styles/Overpass.css');
+
+    html { font-size: 12px }
+
+    @media only screen and (min-width: 1400px) { html { font-size: 13px } }
+    @media only screen and (min-width: 1600px) { html { font-size: 14px } }
+    @media only screen and (min-width: 1800px) { html { font-size: 16px } }
+    @media only screen and (min-width: 2048px) { html { font-size: 18px } }
+
+    @media only screen and (max-height: 600px) { html { font-size: 10px } }
+
+    body {font-family: 'Atkinson Hyperlegible Mono', 'Overpass Mono', monospace; background-color: white; margin: 0; padding: 0 }
+
+    a {text-decoration: none; color: #c9211e}
+
+    fixed-width {margin: 0 auto; padding: 2.33rem; max-width: 2048px; overflow-x: hidden; display: block }
+
+    .vertical,
+    row-split     { display: flex; flex-direction: column; align-items: center }
+    column-split  { display: flex; align-items: flex-start; width: 100% }
+    column-center { flex-grow: 1 }
+
+    mobile-content { display: none }
+    mobile-content.wide column-split > * { margin-left: 2rem }
+    mobile-content.wide .picture { overflow: hidden; max-height: 30rem; }
+
+    block-rounded { border: dotted 2px #ccc; border-radius: 2rem; flex-grow: 1; margin: 0; place-items: center; display: grid; font-size: 1.33rem }
+    block-space   { margin-top: 3rem; display: block }
+
+    header-small  { font-size: 1.66rem; font-weight: bold; margin: 1rem; color: #c9211e}
+
+    block-rounded.info    { display: block; padding: 2.88rem; font-size: 1.22rem }
+    block-rounded.info h1 { font-size: 1.66rem; color: #333;  margin-bottom: 2rem; font-weight: bold; color: #333 }
+
+    block-date       { display: block; padding: 1rem; margin-right: 1.88rem;  max-width: fit-content; max-height: fit-content; text-align: center; color: white; border-radius: 1rem; font-size: 1.66rem; font-weight: bold; }
+
+    block-date.black { background-color: black; }
+    block-date.red   { background-color: #c9211e; }
+    block-date.white { border: dotted 2px #c9211e; background-color: white; color: #c9211e }
+    block-date.gray  { border: none; border-radius: 0; border-bottom:  dotted 2px #333; background-color: white; color: #333; font-weight: normal; }
+
+    block-date .number { font-size: 2rem }
+
+    span.rotate { animation: spin 3s linear infinite; display: inline-block; font-size: 1.88rem; }
+    @keyframes spin { from { transform: rotate(0deg) }  to { transform: rotate(360deg) } }
+
+    .yes { display: inline-block }
+    .no  { display: none }
+
+    @media only screen and (max-width: 1024px)
+    {
+        fixed-width { padding: 1.88rem }
+
+        column-split   { justify-content: space-around; align-items: center }
+        mobile-content { display: block; margin: 3rem 3rem 0 0 }
+    }
+
+    @media only screen and (max-width: 640px)
+    {
+        fixed-width { padding: 0.88rem }
+
+        mobile-content.wide { display: none }
+        mobile-content { margin-right: 0; }
+
+        block-rounded { margin: 0 1rem;  }
+    }
+
+    @media only screen and (max-width: 480px)
+    {
+        fixed-width { padding: 0 }
+    }
+
+</style>
+
+<script>
+
+    function local(id) { return document.querySelector(".messages ." + id).innerText  }
+
+</script>
+
+        <style type = "text/css">
+
+            body { background-color: #eee; }
+
+            fixed-width { width: fit-content; padding: 6rem; max-width: 800px; background-color: white; border-radius: 2rem; border: dashed 4.8rem #eee }
+            
+            .from img { border: dotted 2px #aaa; border-radius: 50%; width: 8rem }
+
+            .paper { margin: 3rem auto; width: fit-content; justify-items: left; padding: 2rem; border: dashed 2px #bbb; font-size: 1.22rem; background-color: #fafafa; }
+            .paper .title { font-size: 1.55rem; margin: 1rem 0 }
+            .paper .doi   { margin-top: 2rem }
+            .paper a { color: #777 }
+            .paper a .arrow { display: none }
+            .paper a:hover { margin-left: 0.88rem; }
+            .paper a:hover .arrow { display: inline-block }
+
+            .message { margin-left: 3rem; font-size: 1.22rem; padding: 1rem; border: 0 }
+
+            .info    { font-size: 1.22rem; border: 0; padding: 1rem 0 1rem 1rem; text-align: left; }
+            .info p  { margin:0; padding: 0 }
+            .info a  { display: inline-block; padding: 0.1rem 0.8rem; border-radius: 0.8rem;  background-color: #c9211e; color: white; font-weight: bold }
+            .info a:hover { background-color: white; border: dashed 1px #c9211e; color: #c9211e  }
+            .info b  { color: #c9211e; }
+
+            .header { color: #c9211e; font-size: 3rem; font-weight: bold; margin-top: 2rem }
+
+            .openaccess { background: white; padding: 2rem; margin: 2rem 1rem 4rem 4rem; border: dashed 1px #aaa }
+            .openaccess a { background: none; color: #c9211e; padding: 0;; }
+            .openaccess a:hover { background-color: green; color: white; border-color: green; padding: 0.1rem 0.8rem; }
+
+            .similar { margin: 8rem 2rem 8rem 6rem; display: block }
+
+            .similar .header { font-size: 3.8rem; color: #c9211e; font-weight: bold; display: grid; align-items: center; text-align: center; }
+            .similar .explanation { font-size: 1.22rem; background-color: white; border-radius: 2rem; border: dashed 2.8rem #eee; padding: 3rem 0; margin-left: 4%; text-align: center; }
+
+            .similar .columns { display: flex; flex-wrap: wrap; justify-content: center; }
+            .similar .columns div { width: 41%; max-width: 1024px; min-width: 680px; }
+
+            .similar .list {display: flex; flex-wrap: wrap; max-width: 100vw; justify-content: center;}
+
+            .similar .article {display: block; margin: 4rem 4% 0 0; width: 41%; max-width: 1024px; min-width: 640px; height: fit-content; padding: 1.23rem; border: solid 2px #eee; border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; color: black; text-decoration: none; background-color: white; }
+            .similar .article .time,
+            .similar .article .geo   {color: #888; font-weight: bold; font-size: 1.23rem; width: fit-content}
+            .similar .article .title {font-size: 1.66rem; margin: 1rem 0 1rem 0}
+            .similar .article .journal {font-size: 1.33rem;}
+            .similar .article .year {font-size: 1.33rem;}
+            .similar .article .abstract {margin-top: 1.23rem; font-size: 1.22rem; text-align: justify;}
+            .similar .article:hover {border: dashed 2px #888}
+
+            @media only screen and (max-width: 1800px)
+            {
+                fixed-width { max-width: 640px; }
+            }
+
+            @media only screen and (max-width: 1600px)
+            {
+                .similar .header { margin-bottom: 3rem; }
+            }
+
+        </style>
+
+        <fixed-width>
+
+            <column-split>
+                <div class = "from"><a href = "/"><img src = "/pictures/ravenround.gif"></a></div>
+                <block-rounded class = "message" translate = "ru:message">Вот незадача! Полного текста этой статьи нет в моей базе:</block-rounded>
+            </column-split>
+
+            <block-rounded class = "paper">
+
+                <div class = "title">Polycrystalline LPCVD 3C-SiC Thin Films on SiO₂ Using Alternating Supply Deposition</div>
+
+                <div>Journal of Microelectromechanical Systems, 2024</div>
+
+                <div class = "abstract">In this paper, we demonstrate the deposition of 3C-SiC thin films on SiO2 using the alternating supply deposition (ASD) technique in a low-pressure chemical vapor deposition (LPCVD) furnace. We provide data of the thin film properties showing strong dependencies on the process gas flow rates of silane, propane and hydrogen. For comparative reasons all gas flow compositions were performed on <100> silicon and SiO2. A decreased rate of growth per cycle of ~37 % was discovered on SiO2. X-ray photoelectron...</div>
+
+                <div class = "doi"><a target = "_blank" href = "//doi.org/10.1109/JMEMS.2024.3472286">10.1109/JMEMS.2024.3472286 <span class = "arrow">&rarr;</span></a></div>
+
+            </block-rounded>
+
+            <block-rounded class = "info"  translate = "ru:recent">
+                Статья относительно новая - она была опубликована после 2021 года. Такие статьи, в большинстве своем, отсутствуют в базе Sci-Hub по причине сложности их автоматического скачивания в большом количестве.
+            </block-rounded>
+
+            <block-rounded class = "info openaccess" >
+                <p><span  translate = "ru:openaccess">О! Согласно индексу OpenAlex, данная статья находится в открытом доступе. Попробовать скачать её можно</span> <a target = "blank" href = "https://doi.org/10.1109/jmems.2024.3472286" translate = "ru:here">тут</a>. <span translate = "ru:warning">Но это не гарантированно, так как индекс часто содержит ошибки.</span></p>
+            </block-rounded>
+
+            <div class = "header" translate = "ru:question">Что делать?</div>
+
+            <block-rounded class = "info">
+
+                <p translate = "ru:todo">Но к счастью, есть такая новая платформа <a target = "blank" href = "//sci-net.ru/">Sci-Net</a>, где можно разместить запрос на статью. Как правило, если статья не какая-то редкая, то её скачают по Вашему запросу в течение нескольких минут.</p>
+                
+                <p style = "margin-top: 2rem" translate = "ru:goal">... после того, как запрос будет решен, статья появится на Sci-Hub и <b>будет всегда доступна бесплатно</b> для любого человека. Таким образом, пользуясь платформой, Вы помогаете проекту Sci-Hub расти, и с каждым новым запросом увеличиваете процент статей в открытом доступе.</p>
+
+            </block-rounded>
+
+        </fixed-width>
+    
+        <div class = "similar" >
+
+            <div class = "columns">
+                <div class = "header" translate = "ru:similar">
+                    похожие статьи
+                </div>
+
+                <div class = "explanation" translate = "ru:alternatives">
+                    ... а еще можно посмотреть похожие статьи по той же тематике, которые точно есть в базе данных проекта
+                </div>
+            </div>
+
+            <div class = "list">
+                <a class = "article" target = "blank" href = "/10.1016/j.sna.2004.09.009">
+    <div class = "title">Polycrystalline 3C-SiC thin films deposited by dual precursor LPCVD for MEMS applications</div>
+    <div><span class = "journal">Sensors and Actuators A: Physical</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">Polycrystalline silicon carbide (poly-SiC) thin films were deposited in a high-throughput, low pressure chemical vapor deposition (LPCVD) furnace using dichlorosilane (SiH2Cl2) and acetylene (C2H2) dual precursors. The deposition temperature ranged from 800 to 900 °C, and the pressure was varied between 0.46 and 5.00 Torr. Poly-SiC deposition with good uniformity is demonstrated on 150 and 100 mm diameter (1 0 0) silicon wafers. X-ray photoelectron spectroscopy (XPS) data indicated that stoichiometric SiC...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0040-6090(99)00494-0">
+    <div class = "title">Growth of polycrystalline SiC films on SiO 2 and Si 3 N 4 by APCVD</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">1999</span></div>
+    <div class = "abstract">The deposition of undoped and phosphorus-doped polycrystalline silicon carbide (poly-SiC) films on SiO2 and Si3N4 substrates by atmospheric pressure chemical vapor deposition (APCVD) was studied. Silane and propane were used as source gases, hydrogen was used as the carrier gas, and phosphine was used as the doping gas. The deposition temperature was fixed at 1050°C and deposition times of 30 s and 30 min were used. Stylus profilometry, scanning electron microscopy (SEM), transmission electron microscopy...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.711.61">
+    <div class = "title">Elaboration of Monocrystalline Si Thin Film on 3C-SiC(100)/Si Epilayers by Low Pressure Chemical Vapor Deposition</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">The growth of continuous silicon monocrystalline thin films on 3C-SiC epilayers deposited on silicon substrates is presented in this study. Such heterostructures can be beneficial for the fabrication of Micro Electro Mechanical Systems or electronic applications. The elaboration of these heterostructures was carried out using Low Pressure Chemical Vapor Deposition. X-ray Diffraction, Fourier Transformed Infra-Red spectroscopy and Scanning Electron Microscopy have been used to investigate the structural...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.ceramint.2007.02.011">
+    <div class = "title">Heteroepitaxial growth and characterization of 3C-SiC films on on-axis Si (110) substrates by LPCVD</div>
+    <div><span class = "journal">Ceramics International</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Cubic SiC (3C-SiC) film has been deposited on Si (1 1 0) substrate by the low pressure chemical vapor deposition (LPCVD) with gas sources of SiH4, C3H8 and carrier gas of H2. The 3C-SiC crystalline film can be confirmed through the observations using reflection high-energy electron diffraction (RHEED) images. The X-ray diffraction (XRD) pattern and the rocking curve indicate that the (1 1 1) plane of SiC film is parallel to the surface of the Si (1 1 0) substrate and the film is of high crystallinity. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0925-3467(03)00070-3">
+    <div class = "title">SiC heteroepitaxial growth by low pressure chemical vapor deposition on Si(111) substrates</div>
+    <div><span class = "journal">Optical Materials</span>, <span class = "year">2003</span></div>
+    <div class = "abstract">3C-SiC was heteroepitaxially grown on Si(1 1 1) substrates by the low pressure chemical vapor deposition (LPCVD) with a gas mixture of silane, ethane and hydrogen. Under the very low pressure of 30 Pa, we got good single-crystalline SiC films at a low temperature of 900 °C, much lower than the typical deposition temperature above 1200 °C found elsewhere. Their characteristics and crystallinity were examined by X-ray diffraction, infrared absorption, and auger electron spectrum (AES). The SiC peak was...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.ceramint.2007.09.089">
+    <div class = "title">Characteristics of polycrystalline 3C-SiC thin films grown on Si wafers for harsh environment microdevices</div>
+    <div><span class = "journal">Ceramics International</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">This paper presents the growth conditions and characteristics of polycrystalline (poly) 3C-SiC thin films for applications related to harsh environments. The growth of the poly 3C-SiC thin film on the oxided Si wafer was carried out by (atmospheric pressure chemical vapor deposition) APCVD using hexamethyildisilane (HMDS, Si2(CH3)6) precursor. To obtain an optimized growth condition, we have performed depositions under various conditions that temperature adjusted from 1000 to 1200 °C, the HMDS flow rate...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.527-529.1103">
+    <div class = "title">Characterization of Low Stress, Undoped LPCVD Polycrystalline SiC Films for MEMS Applications</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">This paper details the characterization of polycrystalline SiC (poly-SiC) thin films deposited by low pressure chemical vapor deposition. Films were deposited on both Si and SiO2- coated Si substrates using dichlorosilane (SiH2Cl2) and acetylene (C2H2) as precursor gases. Low residual tensile stress films were deposited at 900°C at a pressure of 2 Torr using SiH2Cl2 and C2H2 (5% in H2) flow rates of 35 sccm and 180 sccm, respectively. XRD analysis of these films indicated a (111) 3C-SiC orientation...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2012.07.097">
+    <div class = "title">Effect of propane/silane ratio on the growth of 3C-SiC thin films on Si(100) substrates by APCVD</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2012</span></div>
+    <div class = "abstract">3C-SiC thin films were grown on Si(1 0 0) substrates at 1200 °C by atmospheric pressure chemical vapor deposition. We performed an in-depth study on the effect of propane/silane ratio (it is expressed by C/Si which means the ratio of C atom to Si atom in propane and silane) on crystalline quality and microstructure of 3C-SiC thin films. The 3C-SiC thin films exhibit epitaxial nature with pyramid-like morphology or polycrystalline columnar grains with rounded shape, which are dependent on C/Si ratio. The...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1143/jjap.46.45">
+    <div class = "title">Film Properties of Nanocrystalline 3C–SiC Thin Films Deposited on Glass Substrates by Hot-Wire Chemical Vapor Deposition Using CH<sub>4</sub> as a Carbon Source</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">Nanocrystalline cubic silicon carbide (3C–SiC) thin films have been successfully prepared on glass substrates (at a low temperature of around 325 °C) by hot-wire chemical vapor deposition using CH4 as a carbon source. It was found that using CH4, i.e., a SiH4/CH4/H2 system, is useful for the low-temperature deposition of nanocrystalline 3C–SiC thin films and that filament temperature (Tf) is a significant parameter. The structural transition from hydrogenated amorphous SiC (a-SiC:H) to nanocrystalline...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1088/1674-0068/20/03/305-307">
+    <div class = "title">Growth of 3C-SiC Films on On-axis 6H-SiC Substrates by LPCVD</div>
+    <div><span class = "journal">Chinese Journal of Chemical Physics</span>, <span class = "year">2007</span></div>
+    <div class = "abstract">Cubic SiC (3C-SiC) films were deposited on on-axis 6H-SiC (0001) substrates by low-pressure chemical vapor deposition (LPCVD). The result of X-ray diffraction patterns shows that the 3C-SiC films were of good crystalline quality. The influence of the growth parameters (flow rates of the gas sources and growth temperature) on the growth rate of the SiC films is discussed. The results show that the transport of silane or its reaction products is the limiting factor for the growth. The surface morphology of...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.3158549">
+    <div class = "title">Design and Performance of an LPCVD Reactor for the Growth of 3C-Silicon Carbide</div>
+    <div><span class = "journal">Journal of The Electrochemical Society</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">This paper discusses the design of a low pressure chemical vapor deposition (LPCVD) reactor and growth of β silicon carbide (3C-SiC) thin films on Si. The reactor's hot-zone configuration radiatively couples the graphite heater (no physical contact) to Si substrates with realized temperatures . We implemented a four-stage growth procedure using silane and propane precursors and hydrogen as the carrier gas. Temperatures, pressures, and flows varied from , from , and from during growth, respectively. Growth...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jcrysgro.2009.07.036">
+    <div class = "title">Transition between amorphous and crystalline phases of SiC deposited on Si substrate using H3SiCH3</div>
+    <div><span class = "journal">Journal of Crystal Growth</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">This paper presents a study of the transition between amorphous and crystalline phases of SiC films deposited on Si(1 0 0) substrate using H3SiCH3 as a single precursor by a conventional low-pressure chemical vapor deposition method in a hot-wall reactor. The microstructure of SiC, characterized by X-ray diffraction and high-resolution transmission electron microscopy, is found to vary with substrate temperature and H3SiCH3 pressure. The grain size decreases with increasing MS pressure at a given...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.1506461">
+    <div class = "title">Deposition of Polycrystalline 3C-SiC Films on 100 mm Diameter Si(100) Wafers in a Large-Volume LPCVD Furnace</div>
+    <div><span class = "journal">Electrochemical and Solid-State Letters</span>, <span class = "year">2002</span></div>
+    <div class = "abstract">The chemical and microstructural characteristics of silicon carbide films deposited on 100 mm diam, silicon (100) wafers in a large-volume, low-pressure chemical vapor deposition (LPCVD) furnace using dichlorosilane and acetylene were investigated. The deposition temperature was held constant at 900°C and the pressure ranged between 460 and 510 mTorr. X-ray photoelectron spectroscopy data indicated that stoichiometric SiC was deposited using molar ratios of 4:1, 6:1, and 8:1. X-ray diffraction showed that...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.4028/www.scientific.net/msf.483-485.745">
+    <div class = "title">Characterization of Electrical Contacts on Polycrystalline 3C-SiC Thin Films</div>
+    <div><span class = "journal">Materials Science Forum</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">We report on the investigation of electrical properties of polycrystalline 3C-SiC thin films deposited on oxidized Si by low pressure chemical vapor deposition (LPCVD) to obtain bi-layer structures [Si(100)/SiO2/poly 3C-SiC] for pressure sensors and micro-electromechanical system (MEMS) applications. Polycrystalline 3C-SiC films have been preliminary characterized in their compositional, structural, morphological and electrical properties. Moreover, metal contact definition has been carefully optimized by...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0921-5107(00)00357-3">
+    <div class = "title">Epitaxial monocrystalline SiC films grown on Si by HFCVD at 780°C</div>
+    <div><span class = "journal">Materials Science and Engineering: B</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">In this paper, our work is reported on heteroepitaxial monocrystalline SiC films deposited on single-crystalline (111) silicon by hot filament chemical vapor deposition (HFCVD) with a gas mixture of methane, silane and hydrogen at a low temperature of 780°C. The surface micrography and thickness of SiC films on Si (111) substrate were analyzed by scanning electron microscopy (SEM). The characteristics and crystallinity of the SiC film were examined by X-ray diffractometer (XRD), transmission electron...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/s0022-0248(97)00055-9">
+    <div class = "title">3CSiC growth by alternate supply of SiH2Cl2 and C2H2</div>
+    <div><span class = "journal">Journal of Crystal Growth</span>, <span class = "year">1997</span></div>
+    <div class = "abstract">We have attempted to grow heteroepitaxial 3C-SiC films on Si(001) substrates with high productivity by a hot-wall type low pressure chemical vapor deposition (LPCVD) using an alternate supply of acetylene (C 2 H 2 ) and dichlorosilane (SiH 2 Cl 2 ) into a reaction tube. In order to realize a high quality and large area single crystalline SiC formation, we have inquired into the desorption behavior of C 2 H 2 molecules in the SiC growth process. We suggested that a layer-by-layer SiC growth which was...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1166/jnn.2008.220">
+    <div class = "title">Very Thin Poly-SiC Films for Micro/Nano Devices</div>
+    <div><span class = "journal">Journal of Nanoscience and Nanotechnology</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">We report characterization of nitrogen-doped, very thin, low-stress polycrystalline silicon carbide (poly-SiC) films suitable for fabricating micro/nano devices. The poly-SiC films are deposited on 100 mm-diameter (100) silicon wafers in a large-scale, hot-wall, horizontal LPCVD furnace using SiH2Cl2 and C2H2 as precursors and NH, as doping gas. The deposition temperature and pressure are fixed at 900 degrees C and 4 Torr, respectively. The deposition rate increases substantially in the first 50 minutes,...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.jallcom.2006.01.094">
+    <div class = "title">Controlled-growth and characterization of 3C-SiC and 6H-SiC films on C-plane sapphire substrates by LPCVD</div>
+    <div><span class = "journal">Journal of Alloys and Compounds</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">Abstract SiC films have been deposited on C-plane (0 0 0 1) sapphire substrates by low pressure chemical vapor deposition (LPCVD). The 3C-SiC and 6H-SiC polytype kinds of the films grown at two different growth parameters (growth temperature and flow rate of silane) were verified by Raman spectra analysis. The results of XRD patterns and rocking curves show the films are of good crystalline quality. The microstructure of the films was measured by high resolution transmission electron microscopy (HRTEM)....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.surfcoat.2004.10.033">
+    <div class = "title">Preparation of Si–C–H thin films embedded with high oriented (100) polycrystalline silicon</div>
+    <div><span class = "journal">Surface and Coatings Technology</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">Abstract Si–C–H thin films were prepared by RF-plasma enhanced chemical vapor deposition (RF-PECVD) at the substrate temperature of 300 °C, in which SiH 4 and CH 4 were used as the resource gases and hydrogen as the carrying vehicle. X-ray diffraction (XRD), Raman spectroscopy (RS), infrared absorption spectroscopy (IR), and high-resistance meter were used to measure the microstructure and resistivity, respectively. The results indicate that the thin films deposited on (100) silicon substrate at the...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/wcpec.2006.279805">
+    <div class = "title">Preparation of Nanocrystalline Silicon Carbide Thin Films by Hot-Wire Chemical Vapor Deposition at Various Filament Temperature</div>
+    <div><span class = "journal">2006 IEEE 4th World Conference on Photovoltaic Energy Conference</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">We prepared silicon carbide (SiC) thin films by hot-wire chemical vapor deposition (HW-CVD) using methane as a carbon source gas at substrate temperature of 325degC and investigated the influence of filament temperature, Tf, on the structure and optical properties of the resulting films. X-ray diffraction patterns showed that film prepared at Tf=1400degC was amorphous SiC:H and that films prepared at Tf above 1600degC were nanocrystalline 3C-SiC. In addition, as the Tf was increased, the mean crystallite...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.tsf.2011.04.224">
+    <div class = "title">Growth of 3C–SiC on 150-mm Si(100) substrates by alternating supply epitaxy at 1000 °C</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">2011</span></div>
+    <div class = "abstract">To lower deposition temperature and reduce thermal mismatch induced stress, heteroepitaxial growth of single-crystalline 3C–SiC on 150 mm Si wafers was investigated at 1000 °C using alternating supply epitaxy. The growth was performed in a hot-wall low-pressure chemical vapor deposition reactor, with silane and acetylene being employed as precursors. To avoid contamination of Si substrate, the reactor was filled in with oxygen to grow silicon dioxide, and then this thin oxide layer was etched away by...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.sna.2020.112474">
+    <div class = "title">Wet oxidation of 3C-SiC on Si for MEMS processing and use in harsh environments: Effects of the film thicknesses, crystalline orientations, and growth temperatures</div>
+    <div><span class = "journal">Sensors and Actuators A: Physical</span>, <span class = "year">2021</span></div>
+    <div class = "abstract">An in-depth understanding of the formation of silicon dioxide (SiO2) on silicon carbide (SiC) in thermal oxidation is imperative for micro/nano fabrication processes, integration of electronic components, and evaluation of SiC device performance under extreme conditions. Herein, we report a comprehensive study on the effects of crystalline orientations, thicknesses, and growth temperatures of cubic SiC films on their wet oxidation properties. The oxidation rate and surface morphology were characterized...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.apsusc.2005.03.011">
+    <div class = "title">Compositional, structural and optical properties of Si-rich a-SiC:H thin films deposited by ArF-LCVD</div>
+    <div><span class = "journal">Applied Surface Science</span>, <span class = "year">2005</span></div>
+    <div class = "abstract">Silicon-rich amorphous hydrogenated silicon carbon (a-SiC:H) films with C content up to 23% have been grown on Si and Corning glass substrates using ArF laser induced chemical vapor deposition (ArF-LCVD). This technique allows tailoring film composition by controlling deposition parameters such as precursor gas mixture (disilane and ethylene diluted in helium) and substrate temperature (180–400 °C). The influence of both parameters on composition and bonding were studied by Fourier transform infrarred...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1063/1.359745">
+    <div class = "title">Epitaxial growth of 3C–SiC films on 4 in. diam (100) silicon wafers by atmospheric pressure chemical vapor deposition</div>
+    <div><span class = "journal">Journal of Applied Physics</span>, <span class = "year">1995</span></div>
+    <div class = "abstract">Silicon carbide (SiC) films have been grown on 4 in. diam (100) silicon wafers by atmospheric pressure chemical vapor deposition, using propane, silane, and hydrogen. X-ray photoelectron spectroscopy data confirm that the films are stoichiometric SiC, with no major impurities. X-ray diffraction and transmission electron microscopy (TEM) data indicate that the films are single-crystalline cubic polytype (3C) across the 4 in. substrates. With the exception of slip lines near the edge of the wafers, the films...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.3418619">
+    <div class = "title">Growth of 3C-SiC Thin Film on AlN/Si(100) with Atomically Abrupt Interface via Tailored Precursor Feeding Procedure</div>
+    <div><span class = "journal">Electrochemical and Solid-State Letters</span>, <span class = "year">2010</span></div>
+    <div class = "abstract">The heteroepitaxial growth of cubic silicon carbide (3C-SiC) films on AlN/Si(100) substrates is demonstrated using a modified precursor feeding procedure of a chemical vapor deposition process. A thin (150 nm) SiC buffer layer is formed during the temperature ramp from 600 to in the presence of the methyltrichlorosilane precursor and hydrogen gas. The deposited 3C-SiC thin film exhibits a sharp Raman transverse optical 3C-SiC peak, a strong X-ray diffraction intensity for the SiC(111) peak, and an...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.tsf.2007.06.065">
+    <div class = "title">Influence of gas pressure on low-temperature preparation and film properties of nanocrystalline 3C-SiC thin films by HW-CVD using SiH4/CH4/H2 system</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">2008</span></div>
+    <div class = "abstract">Abstract We investigated an influence of gas pressure on low-temperature preparation of nanocrystalline cubic silicon carbide (nc-3C-SiC) films by hot-wire chemical vapour deposition (HW-CVD) using SiH 4 /CH 4 /H 2 system. X-ray diffraction (XRD) and Fourier transform infrared (FT-IR) spectra revealed that the films prepared below 1.5 Torr were Si-nanocrystallite-embedded hydrogenated amorphous SiC. On the other hand, nc-3C-SiC films were successfully prepared at gas pressure above 2 Torr. The high gas...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.tsf.2009.01.042">
+    <div class = "title">Growth of silicon carbide thin films by hot-wire chemical vapor deposition from SiH4/CH4/H2</div>
+    <div><span class = "journal">Thin Solid Films</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">Abstract Silicon carbide (SiC) thin films were prepared by hot-wire chemical vapor deposition from SiH 4 /CH 4 /H 2 and their structural properties were investigated by X-ray diffraction, Fourier transform infrared absorption and Raman scattering spectroscopies. At 2 Torr, Si-crystallite-embedded amorphous SiC (a-Si 1 −  x C x :H) grew at filament temperatures ( T f ) below 1600 °C and nanocrystalline cubic SiC (nc-3C-SiC:H) grew above T f  = 1700 °C. On the other hand, At 4 Torr, a-Si 1 − ...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1109/memsys.2005.1453964">
+    <div class = "title">Low-stress, heavily-doped polycrystalline silicon carbide for MEMS applications</div>
+    <div><span class = "journal">18th IEEE International Conference on Micro Electro Mechanical Systems, 2005. MEMS 2005.</span>, <span class = "year"></span></div>
+    <div class = "abstract">This paper details a process to deposit low-stress, heavily-doped polycrystalline 3C-SiC (poly-SiC) films suitable for MEMS applications. The films were deposited by low pressure chemical vapor deposition (LPCVD) on Si and SiO/sub 2/ coated Si wafers at 900/spl deg/C using dichlorosilane (SiH/sub 2/Cl/sub 2/) and acetylene (C/sub 2/H/sub 2/) as precursors and ammonia (NH/sub 3/) as a dopant gas. Poly-SiC films with a resistivity of 0.017 /spl Omega/-cm and a tensile residual stress of 59 MPa were produced....</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1143/jjap.45.8381">
+    <div class = "title">Structural Characterization of Polycrystalline 3C–SiC Films Prepared at High Rates by Atmospheric Pressure Plasma Chemical Vapor Deposition Using Monomethylsilane</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2006</span></div>
+    <div class = "abstract">Polycrystalline cubic silicon carbide (3C–SiC) films were deposited at a relatively low temperature of 1070 K on Si(001) substrates by atmospheric pressure plasma chemical vapor deposition. Monomethylsilane (CH 3 SiH 3 ) was used as the single source. CH 4 and SiH 4 dual sources were also used to compare deposition characteristics. Under the present deposition conditions, very high deposition rates of more than 3 nm/s were obtained. The structure of the SiC films was evaluated by reflection high-energy...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1016/j.sna.2009.08.005">
+    <div class = "title">Growth and characteristics of polycrystalline 3C–SiC films for extreme environment micro/nano-electromechanical systems</div>
+    <div><span class = "journal">Sensors and Actuators A: Physical</span>, <span class = "year">2009</span></div>
+    <div class = "abstract">This paper presents the growth conditions, physical, chemical, mechanical and optical characteristics of polycrystalline 3C–SiC films for extreme environment micro/nano-electromechanical systems (M/NEMS). The growth of the polycrystalline 3C–SiC thin film on oxidized Si wafers was carried out by using atmospheric pressure chemical vapor deposition (APCVD) with a single-precursor of hexamethyldisilane (HMDS: Si2(CH3)6). The growth temperature and the HMDS flow rate were adjusted from 1000 to 1200 °C...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1149/1.2095387">
+    <div class = "title">Optimized Deposition Parameters for Low Pressure Chemical Vapor Deposited Titanium Silicide</div>
+    <div><span class = "journal">Journal of The Electrochemical Society</span>, <span class = "year">1988</span></div>
+    <div class = "abstract">A system and a process have been developed for the low pressure chemical vapor deposition (LPCVD) of titanium silicide. We report for the first time the optimization of LPCVD titanium silicide film properties against the deposition parameters, including the temperature, pressure, and flow rate ratios. Smooth, reproducible, low resistivity (15–20 μΩ‐cm) titanium silicide films have been deposited at a temperature of 730°C, a pressure of 67 mtorr, and a flow rate ratio of . The as‐deposited films...</div>
+</a>
+<a class = "article" target = "blank" href = "/10.1143/jjap.39.l617">
+    <div class = "title">Epitaxial Growth of 3C-SiC on Thin Silicon-on-Insulator Substrate by Chemical Vapor Deposition Using Alternating Gas Supply</div>
+    <div><span class = "journal">Japanese Journal of Applied Physics</span>, <span class = "year">2000</span></div>
+    <div class = "abstract">Epitaxial 3C-SiC film has been grown on thin silicon-on-insulator (SOI) substrate by chemical vapor deposition (CVD) using an alternating supply of SiH 2 Cl 2 and C 2 H 2 . The SiC surface deposited on SOI substrate is almost flat with few hillocks, and the full-width at half maximum (FWHM) of the X-ray diffraction (XRD) peak of the SiC(111) was 0.2°. Use of a thin SOI substrate is found to be essential to suppress the growth of voids that appear at the SiC/Si interface.</div>
+</a>
+
+            </div>
+        </div>
+
+    </body>
+</html>
