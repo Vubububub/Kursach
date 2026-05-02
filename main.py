@@ -1,6 +1,9 @@
 import asyncio
+import json
+from rank_bm25 import BM25Okapi
 import aiohttp
 from ollamafreeapi import OllamaFreeAPI
+from sentence_transformers import util
 
 
 client = OllamaFreeAPI()
@@ -26,6 +29,29 @@ pending_queries = {}
 
 SEMANTIC_API = "https://api.semanticscholar.org/graph/v1/paper/search"
 
+def tokenize(text: str):
+    return text.lower().split()
+
+def build_e5_document(paper):
+    title = paper.get("title", "")
+    abstract = paper.get("summary", "") or ""
+
+    fields = paper.get("fields", [])
+    s2_fields = paper.get("s2_fields", [])
+
+    # чистим и ограничиваем шум
+    fields_text = " ".join(fields[:5])
+    s2_text = " ".join(s2_fields[:5])
+
+    # ВАЖНО: структура важнее длины
+    doc = (
+        f"Title: {title}. "
+        f"Abstract: {abstract}. "
+        f"Fields: {fields_text}. "
+        f"Topics: {s2_text}."
+    )
+
+    return doc.strip()
 
 def translate_to_en(text: str) -> str:
     return GoogleTranslator(source="ru", target="en").translate(text)
@@ -33,6 +59,7 @@ def translate_to_en(text: str) -> str:
 
 def translate_to_ru(text: str) -> str:
     return GoogleTranslator(source="en", target="ru").translate(text)
+
 
 
 def refine_query(query):
@@ -59,70 +86,6 @@ User query:
 
     return response.strip()
 
-
-def rerank_with_llm(query, papers):
-
-    text = ""
-
-    for i, p in enumerate(papers):
-
-        text += f"""
-[{i}]
-Title: {p["title"]}
-Year: {p["year"]}
-Abstract: {(p["summary"] or "")[:400]}
-
----
-"""
-
-    prompt = f"""
-You are a scientific paper ranking system.
-
-User query:
-{query}
-
-Task:
-Score each paper from 0 to 10 based on relevance.
-
-Return format ONLY:
-index - score
-
-Example:
-3 - 9.5
-1 - 8.2
-0 - 7.0
-
-Papers:
-{text}
-"""
-
-    response = client.chat(
-        model="llama3.2:3b",
-        prompt=prompt,
-        temperature=0
-    )
-
-    scores = {}
-
-    for line in response.split("\n"):
-        try:
-            if "-" in line:
-                idx, score = line.split("-")
-                scores[int(idx.strip())] = float(score.strip())
-        except:
-            continue
-
-    # fallback
-    if not scores:
-        return papers[:5]
-
-    reranked = sorted(
-        papers,
-        key=lambda p: scores.get(papers.index(p), 0),
-        reverse=True
-    )
-
-    return reranked[:5]
 
 async def search_papers(query: str):
 
@@ -205,38 +168,73 @@ async def search_papers(query: str):
 
     return papers
 
+from sentence_transformers import util
+
 def rank_papers(query: str, papers):
 
+    # -------------------------
+    # 1. BUILD DOCUMENTS
+    # -------------------------
     texts = []
-
     for p in papers:
+        doc = build_e5_document(p)  # твоя улучшенная функция
+        texts.append(doc)
 
-        title = p["title"] or ""
-        abstract = p["summary"] or ""
+    # -------------------------
+    # 2. BM25 SETUP
+    # -------------------------
+    tokenized_docs = [tokenize(t) for t in texts]
+    bm25 = BM25Okapi(tokenized_docs)
 
-        fields = " ".join(p.get("fields", []))
-        s2_fields = " ".join(p.get("s2_fields", []))
+    tokenized_query = tokenize(query)
+    bm25_scores = bm25.get_scores(tokenized_query)
 
-        text = (
-            title + " " + title +
-            abstract + " " +
-            fields + " " +
-            s2_fields
+    # -------------------------
+    # 3. E5 EMBEDDINGS
+    # -------------------------
+    query_emb = model.encode(
+        f"query: {query}",
+        convert_to_tensor=True,
+        normalize_embeddings=True
+    )
+
+    doc_emb = model.encode(
+        [f"passage: {t}" for t in texts],
+        convert_to_tensor=True,
+        normalize_embeddings=True,
+        batch_size=32
+    )
+
+    semantic_scores = util.cos_sim(query_emb, doc_emb)[0].cpu().numpy()
+
+    # -------------------------
+    # 4. NORMALIZATION
+    # -------------------------
+    def normalize(x):
+        x = x - x.min()
+        return x / (x.max() + 1e-9)
+
+    bm25_scores = normalize(bm25_scores)
+    semantic_scores = normalize(semantic_scores)
+
+    # -------------------------
+    # 5. COMBINE SCORES
+    # -------------------------
+    for i, p in enumerate(papers):
+        p["bm25"] = float(bm25_scores[i])
+        p["semantic"] = float(semantic_scores[i])
+
+        p["score"] = (
+            0.4 * p["bm25"] +
+            0.6 * p["semantic"]
         )
 
-        texts.append(text)
-
-    query_emb = model.encode("query: " + query, convert_to_tensor=True)
-    paper_emb = model.encode(  ["passage: " + t for t in texts],convert_to_tensor=True)
-
-    scores = util.cos_sim(query_emb, paper_emb)[0]
-
-    for i, p in enumerate(papers):
-        p["score"] = float(scores[i])
-
+    # -------------------------
+    # 6. SORT
+    # -------------------------
     papers.sort(key=lambda x: x["score"], reverse=True)
 
-    return papers
+    return papers[:5]
 
 def apply_filters(papers, filter_text: str):
 
@@ -320,7 +318,10 @@ async def confirm_query(message: types.Message):
 
     await message.answer("🔎 Ищу статьи...")
 
+
+
     papers = await search_papers(query)
+
 
     if not papers:
         await message.answer("Ничего не найдено")
@@ -328,35 +329,31 @@ async def confirm_query(message: types.Message):
 
     ranked = rank_papers(query, papers)
 
-    reranked = rerank_with_llm(query, papers)
+    await message.answer("📚 Лучшие статьи:\n")
 
-    last_results = reranked
-
-
-
-    result = "📚 Лучшие статьи:\n\n"
-
-    for paper in reranked:
+    for paper in ranked:
 
         title_ru = translate_to_ru(paper["title"])
         summary = paper["summary"] or ""
         summary_ru = ""
+
         if summary:
             summary_ru = translate_to_ru(summary)
-            summary_ru = summary_ru[:500]
+            summary_ru = summary_ru[:400]
+
         authors = ", ".join(paper["authors"][:3])
         score = round(paper["score"], 3)
 
-        result += (
+        text = (
             f"📄 {title_ru}\n"
             f"👨‍🔬 {authors}\n"
             f"📅 {paper['year']}\n"
             f"🎯 Релевантность: {score}\n"
             f"🧠 {summary_ru}...\n"
-            f"🔗 {paper['url']}\n\n"
+            f"🔗 {paper['url']}\n"
         )
 
-    await message.answer(result)
+        await message.answer(text)
 
     del pending_queries[user_id]
 
