@@ -19,7 +19,7 @@ S2_API_KEY = "s2k-2X83R5watwfwNkYUPa8anA0102Q8HpWOt0Epx0VR"
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("intfloat/e5-base-v2")
 
 last_results = []
 pending_queries = {}
@@ -39,12 +39,12 @@ def refine_query(query):
     prompt = f"""
 You are a scientific information extraction system.
 Extract key search terms from the query.
-Replace the terms with scientific ones that are used in scientific articles, the goal is to form the most correct query in English.
+Replace the terms with scientific ones that are used in scientific articles, the goal is to form the most correct query IN ENGLISH.
 Send only the final  query as a response.
 RULES:
 - Keep all materials, numbers, units, and properties
 - DO NOT remove numeric values 
-- Output ONLY a space-separated search query
+- Output ONLY a space-separated search query witout "Query:"
 
 User query:
 {query}
@@ -60,7 +60,69 @@ User query:
     return response.strip()
 
 
+def rerank_with_llm(query, papers):
 
+    text = ""
+
+    for i, p in enumerate(papers):
+
+        text += f"""
+[{i}]
+Title: {p["title"]}
+Year: {p["year"]}
+Abstract: {(p["summary"] or "")[:400]}
+
+---
+"""
+
+    prompt = f"""
+You are a scientific paper ranking system.
+
+User query:
+{query}
+
+Task:
+Score each paper from 0 to 10 based on relevance.
+
+Return format ONLY:
+index - score
+
+Example:
+3 - 9.5
+1 - 8.2
+0 - 7.0
+
+Papers:
+{text}
+"""
+
+    response = client.chat(
+        model="llama3.2:3b",
+        prompt=prompt,
+        temperature=0
+    )
+
+    scores = {}
+
+    for line in response.split("\n"):
+        try:
+            if "-" in line:
+                idx, score = line.split("-")
+                scores[int(idx.strip())] = float(score.strip())
+        except:
+            continue
+
+    # fallback
+    if not scores:
+        return papers[:5]
+
+    reranked = sorted(
+        papers,
+        key=lambda p: scores.get(papers.index(p), 0),
+        reverse=True
+    )
+
+    return reranked[:5]
 
 async def search_papers(query: str):
 
@@ -105,7 +167,7 @@ async def search_papers(query: str):
 
         url = p.get("url") or ""
 
-        # authors
+
         authors = [
             a.get("name")
             for a in p.get("authors", [])
@@ -115,10 +177,10 @@ async def search_papers(query: str):
         # DOI
         doi = (p.get("externalIds") or {}).get("DOI")
 
-        # fieldsOfStudy
+        #
         fields = p.get("fieldsOfStudy") or []
 
-        # s2FieldsOfStudy (очень полезно для семантики)
+
         s2_fields = []
         for f in p.get("s2FieldsOfStudy") or []:
             if isinstance(f, dict):
@@ -137,7 +199,7 @@ async def search_papers(query: str):
             "fields": fields,
             "s2_fields": s2_fields,
 
-            # для ранжирования
+
             "score": 0
         })
 
@@ -164,8 +226,8 @@ def rank_papers(query: str, papers):
 
         texts.append(text)
 
-    query_emb = model.encode(query, convert_to_tensor=True)
-    paper_emb = model.encode(texts, convert_to_tensor=True)
+    query_emb = model.encode("query: " + query, convert_to_tensor=True)
+    paper_emb = model.encode(  ["passage: " + t for t in texts],convert_to_tensor=True)
 
     scores = util.cos_sim(query_emb, paper_emb)[0]
 
@@ -174,7 +236,7 @@ def rank_papers(query: str, papers):
 
     papers.sort(key=lambda x: x["score"], reverse=True)
 
-    return papers[:5]
+    return papers
 
 def apply_filters(papers, filter_text: str):
 
@@ -247,7 +309,7 @@ async def search_command(message: types.Message):
 
 @dp.message(Command("confirm"))
 async def confirm_query(message: types.Message):
-
+    global last_results
     user_id = message.from_user.id
 
     if user_id not in pending_queries:
@@ -266,12 +328,15 @@ async def confirm_query(message: types.Message):
 
     ranked = rank_papers(query, papers)
 
-    global last_results
-    last_results = ranked
+    reranked = rerank_with_llm(query, papers)
+
+    last_results = reranked
+
+
 
     result = "📚 Лучшие статьи:\n\n"
 
-    for paper in ranked:
+    for paper in reranked:
 
         title_ru = translate_to_ru(paper["title"])
         summary = paper["summary"] or ""
