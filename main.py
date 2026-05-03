@@ -1,9 +1,6 @@
 import asyncio
-import json
-from rank_bm25 import BM25Okapi
 import aiohttp
 from ollamafreeapi import OllamaFreeAPI
-from sentence_transformers import util
 
 
 client = OllamaFreeAPI()
@@ -29,29 +26,6 @@ pending_queries = {}
 
 SEMANTIC_API = "https://api.semanticscholar.org/graph/v1/paper/search"
 
-def tokenize(text: str):
-    return text.lower().split()
-
-def build_e5_document(paper):
-    title = paper.get("title", "")
-    abstract = paper.get("summary", "") or ""
-
-    fields = paper.get("fields", [])
-    s2_fields = paper.get("s2_fields", [])
-
-    # чистим и ограничиваем шум
-    fields_text = " ".join(fields[:5])
-    s2_text = " ".join(s2_fields[:5])
-
-    # ВАЖНО: структура важнее длины
-    doc = (
-        f"Title: {title}. "
-        f"Abstract: {abstract}. "
-        f"Fields: {fields_text}. "
-        f"Topics: {s2_text}."
-    )
-
-    return doc.strip()
 
 def translate_to_en(text: str) -> str:
     return GoogleTranslator(source="ru", target="en").translate(text)
@@ -59,6 +33,55 @@ def translate_to_en(text: str) -> str:
 
 def translate_to_ru(text: str) -> str:
     return GoogleTranslator(source="en", target="ru").translate(text)
+
+def llm_filter_papers(papers, filter_query):
+
+    papers_text = ""
+
+    for i, p in enumerate(papers):
+
+        title = p["title"]
+        year = p["year"]
+        abstract = (p["summary"] or "")[:400]
+
+        papers_text += f"[{i}] {title} | {year}\n{abstract}\n\n"
+
+    prompt = f"""
+You are a scientific paper filtering system.
+
+User filter request:
+{filter_query}
+
+Below is a list of papers.
+
+Select the papers that satisfy the filter request.
+
+Return ONLY paper indexes separated by commas.
+
+Example output:
+1,4,7,10
+
+Papers:
+{papers_text}
+"""
+
+    response = client.chat(
+        model="llama3.2:3b",
+        prompt=prompt,
+        temperature=0
+    )
+
+    response = response.strip()
+
+    indexes = []
+
+    for x in response.replace(" ", "").split(","):
+        if x.isdigit():
+            i = int(x)
+            if 0 <= i < len(papers):
+                indexes.append(i)
+
+    return [papers[i] for i in indexes]
 
 
 
@@ -71,7 +94,8 @@ Send only the final  query as a response.
 RULES:
 - Keep all materials, numbers, units, and properties
 - DO NOT remove numeric values 
-- Output ONLY a space-separated search query witout "Query:"
+- Output ONLY a space-separated search query.
+- DO NOT USE "becomes:", "Query:"
 
 User query:
 {query}
@@ -85,6 +109,7 @@ User query:
     )
 
     return response.strip()
+
 
 
 async def search_papers(query: str):
@@ -168,101 +193,65 @@ async def search_papers(query: str):
 
     return papers
 
-from sentence_transformers import util
-
 def rank_papers(query: str, papers):
 
-    # -------------------------
-    # 1. BUILD DOCUMENTS
-    # -------------------------
+    def extract_keywords(q):
+        import re
+        tokens = re.findall(r"[a-zA-Z0-9\./\-]+", q.lower())
+
+        out = []
+        for t in tokens:
+            out.extend(t.split("/"))
+            out.extend(t.split("-"))
+
+        return set([x for x in out if len(x) > 1])
+
+
+    keywords = extract_keywords(query)
+
     texts = []
     for p in papers:
-        doc = build_e5_document(p)  # твоя улучшенная функция
-        texts.append(doc)
+        text = (
+            (p.get("title") or "") + " " +
+            (p.get("summary") or "")
+        ).lower()
+        texts.append(text)
 
-    # -------------------------
-    # 2. BM25 SETUP
-    # -------------------------
-    tokenized_docs = [tokenize(t) for t in texts]
-    bm25 = BM25Okapi(tokenized_docs)
 
-    tokenized_query = tokenize(query)
-    bm25_scores = bm25.get_scores(tokenized_query)
-
-    # -------------------------
-    # 3. E5 EMBEDDINGS
-    # -------------------------
-    query_emb = model.encode(
-        f"query: {query}",
-        convert_to_tensor=True,
-        normalize_embeddings=True
+    query_emb = model.encode("query: " + query, convert_to_tensor=True)
+    paper_emb = model.encode(
+        ["passage: " + t for t in texts],
+        convert_to_tensor=True
     )
 
-    doc_emb = model.encode(
-        [f"passage: {t}" for t in texts],
-        convert_to_tensor=True,
-        normalize_embeddings=True,
-        batch_size=32
-    )
+    sims = util.cos_sim(query_emb, paper_emb)[0]
 
-    semantic_scores = util.cos_sim(query_emb, doc_emb)[0].cpu().numpy()
-
-    # -------------------------
-    # 4. NORMALIZATION
-    # -------------------------
-    def normalize(x):
-        x = x - x.min()
-        return x / (x.max() + 1e-9)
-
-    bm25_scores = normalize(bm25_scores)
-    semantic_scores = normalize(semantic_scores)
-
-    # -------------------------
-    # 5. COMBINE SCORES
-    # -------------------------
     for i, p in enumerate(papers):
-        p["bm25"] = float(bm25_scores[i])
-        p["semantic"] = float(semantic_scores[i])
 
-        p["score"] = (
-            0.4 * p["bm25"] +
-            0.6 * p["semantic"]
-        )
+        text = texts[i]
 
-    # -------------------------
-    # 6. SORT
-    # -------------------------
+        score = float(sims[i])
+
+
+        hits = 0
+
+        for kw in keywords:
+
+            if kw in text:
+                hits += 1
+
+
+        keyword_score = min(hits / max(len(keywords), 1), 1.0)
+
+
+        score = 0.85 * score + 0.15 * keyword_score
+
+        p["score"] = score
+
     papers.sort(key=lambda x: x["score"], reverse=True)
 
     return papers[:5]
 
-def apply_filters(papers, filter_text: str):
-
-    filters = filter_text.split()
-    filtered = papers
-
-    for f in filters:
-
-        if f.startswith("Дата>"):
-            year = int(f.split(">")[1])
-            filtered = [p for p in filtered if p["year"].isdigit() and int(p["year"]) > year]
-
-        elif f.startswith("Дата<"):
-            year = int(f.split("<")[1])
-            filtered = [p for p in filtered if p["year"].isdigit() and int(p["year"]) < year]
-
-        elif f.startswith("Релевантность>"):
-            score = float(f.split(">")[1])
-            filtered = [p for p in filtered if p["score"] > score]
-
-        elif f.startswith("Автор:"):
-            name = f.split(":")[1].lower()
-            filtered = [
-                p for p in filtered
-                if any(name in a.lower() for a in p["authors"])
-            ]
-
-    return filtered
 
 
 @dp.message(Command("start"))
@@ -318,10 +307,7 @@ async def confirm_query(message: types.Message):
 
     await message.answer("🔎 Ищу статьи...")
 
-
-
     papers = await search_papers(query)
-
 
     if not papers:
         await message.answer("Ничего не найдено")
@@ -329,31 +315,31 @@ async def confirm_query(message: types.Message):
 
     ranked = rank_papers(query, papers)
 
-    await message.answer("📚 Лучшие статьи:\n")
+    last_results = papers
+
+    result = "📚 Лучшие статьи:\n\n"
 
     for paper in ranked:
 
         title_ru = translate_to_ru(paper["title"])
         summary = paper["summary"] or ""
         summary_ru = ""
-
         if summary:
             summary_ru = translate_to_ru(summary)
-            summary_ru = summary_ru[:400]
-
+            summary_ru = summary_ru[:500]
         authors = ", ".join(paper["authors"][:3])
         score = round(paper["score"], 3)
 
-        text = (
+        result += (
             f"📄 {title_ru}\n"
             f"👨‍🔬 {authors}\n"
             f"📅 {paper['year']}\n"
             f"🎯 Релевантность: {score}\n"
             f"🧠 {summary_ru}...\n"
-            f"🔗 {paper['url']}\n"
+            f"🔗 {paper['url']}\n\n"
         )
 
-        await message.answer(text)
+    await message.answer(result)
 
     del pending_queries[user_id]
 
@@ -372,13 +358,16 @@ async def filter_command(message: types.Message):
     if len(parts) < 2:
         await message.answer(
             "Пример:\n"
-            "/filter Дата>2018 Релевантность>0.4 Автор:Smith"
+            "/filter за последние 5 лет\n"
+
         )
         return
 
     filter_text = parts[1]
 
-    filtered = apply_filters(last_results, filter_text)
+    await message.answer("🤖 Анализирую статьи через LLM...")
+
+    filtered = llm_filter_papers(last_results, filter_text)
 
     if not filtered:
         await message.answer("Ничего не найдено")
@@ -389,16 +378,16 @@ async def filter_command(message: types.Message):
     for paper in filtered[:5]:
 
         title_ru = translate_to_ru(paper["title"])
+
         summary = paper["summary"] or ""
         summary_ru = translate_to_ru(summary[:300]) if summary else ""
+
         authors = ", ".join(paper["authors"][:3])
-        score = round(paper["score"], 3)
 
         result += (
             f"📄 {title_ru}\n"
             f"👨‍🔬 {authors}\n"
             f"📅 {paper['year']}\n"
-            f"🎯 Релевантность: {score}\n"
             f"🧠 {summary_ru}...\n"
             f"🔗 {paper['url']}\n\n"
         )
